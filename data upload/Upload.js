@@ -36,14 +36,18 @@ function Upload() {
                 foodcat,
                 restname,
                 restadd,
-                url
+                url,
+                quantity:1
 
             }
             console.log('fooddddddd', foodData);
+          setTimeout(()=>{
+            storeData(foodData);
+          },5000)
            handleUpload();
-           storeData(foodData);
         }
     }
+    
     const selectImgalert = async () => {
         Alert.alert(
             'Upload Profile Picture',
@@ -214,6 +218,7 @@ function Upload() {
             </TouchableOpacity>
 
             <Text style={Styles.imagename}>{imgname}</Text>
+            <Text style={Styles.imagename}>{url}</Text>
 
             <TouchableOpacity onPress={Submit} style={Styles.btn1}>
                 <Text style={Styles.btntext1}>UPLOAD DATA</Text>

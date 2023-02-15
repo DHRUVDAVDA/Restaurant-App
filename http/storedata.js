@@ -31,6 +31,7 @@ export async function storeUser(userData) {
         };
         users.push(userObj);
       }
+      console.log(users);
       return users;
   }
 
@@ -92,10 +93,48 @@ export async function getFooddata(){
         category: response[key].foodcat,
         url: response[key].url,
         restaurant_name:response[key].restname,
-        restaurant_address:response[key].restadd
-
+        restaurant_address:response[key].restadd,
+        quantity:response[key].quantity
       };
       Food.push(foodObj);
     } 
     return Food;    
 }
+
+export async function storeUsersorder(userorderData) {
+  const response = await fetch('https://restaurant-app-ca9a9-default-rtdb.firebaseio.com/users_order.json', {
+    method: 'POST',
+    body: JSON.stringify(userorderData),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8',
+    },
+  })
+  const result = await response.json();
+  console.log( 'result name =>>>> ',result);
+  return result.name;    
+}
+
+export async function getOrderdata(){
+  const response=await fetch('https://restaurant-app-ca9a9-default-rtdb.firebaseio.com/users_order.json',{
+    method:'GET'
+  }).then((response) => response.json())
+
+
+    const orders = [];
+  
+    for (const key in response) {
+      const userObj = {
+        id: key,
+        name:response[key].foodname,
+        quantity: response[key].counter,
+        total:response[key].total,
+        url: response[key].url,
+      };
+      orders.push(userObj);
+    }
+    return orders;
+}
+
+
+
+

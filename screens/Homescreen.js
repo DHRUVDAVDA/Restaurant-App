@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Image, ScrollView, StyleSheet, Text, View, Dimensions,
-     TouchableOpacity, StatusBar, FlatList, Pressable, ActivityIndicator } from "react-native"
+import {
+    Image, ScrollView, StyleSheet, Text, View, Dimensions,
+    TouchableOpacity, StatusBar, FlatList, Pressable, ActivityIndicator, BackHandler
+} from "react-native"
 import { getFooddata } from "../http/storedata";
+import { useDispatch, useSelector } from "react-redux";
+import { addItemToCart } from "../redux/actions/Action";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -10,6 +14,26 @@ const windowHeight = Dimensions.get('window').height;
 
 
 function Homescreen({ navigation, id }) {
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+
+    const dispatch = useDispatch();
+    const items = useSelector(state => state);
+    console.log(items);
+
+    BackHandler.addEventListener('hardwareBackPress',handlebackbutton)
+
+    BackHandler.removeEventListener('hardwareBackPress',handlebackbutton)
+
+    function handlebackbutton(){
+     BackHandler.exitApp();
+     return true;
+     
+    }
+
 
     const [isfetching, setIsfetching] = useState(true)
     const [data, setData] = useState('');
@@ -20,30 +44,27 @@ function Homescreen({ navigation, id }) {
         setData(fooddata);
         setIsfetching(false);
     }
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-
-
+   
     return (
         <ScrollView style={Style.container}>
 
-            {isfetching ? 
-            (<View><ActivityIndicator style={Style.loader} size={"large"} color='white'/></View>)
+            {isfetching ?
+                (<View><ActivityIndicator style={Style.loader} size={"large"} color='#fd9827' /></View>)
                 :
                 (
                     <View>
-
-
                         <StatusBar backgroundColor="#100f1f" />
                         <Image style={Style.headimage} source={require('./foodhead.jpg')} />
 
-                        <TouchableOpacity style={Style.menupngtouch}>
+                        <TouchableOpacity onPress={() => navigation.navigate('profile')} style={Style.menupngtouch}>
                             <Image style={Style.menupng} source={require('./menu.png')} />
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={() => navigation.navigate('Upload')} style={Style.cartpngtouch}>
+                            <Image style={Style.cartpng} source={require('./upload.png')} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={() => navigation.navigate('Orders')} style={Style.uploadpngtouch}>
                             <Image style={Style.cartpng} source={require('./carts.png')} />
                         </TouchableOpacity>
 
@@ -60,11 +81,14 @@ function Homescreen({ navigation, id }) {
                                 keyExtractor={(item) => item.id}
                                 renderItem={({ item }) => {
                                     return (
-                                        <View>
-
-                                            <View style={Style.foodcat}></View>
-                                            <Text style={Style.cattag}>{item.category}</Text>
-                                        </View>
+                                        <Pressable>
+                                            <View style={Style.fooditem}>
+                                                <View style={Style.foodcat}>
+                                                    <Image style={Style.foodimg} source={{ uri: item.url }} />
+                                                </View>
+                                                <Text style={Style.cattag}>{item.category}</Text>
+                                            </View>
+                                        </Pressable>
                                     )
                                 }
                                 } />
@@ -80,7 +104,7 @@ function Homescreen({ navigation, id }) {
                                     horizontal={true}
                                     data={data}
                                     keyExtractor={(item) => item.id}
-                                    renderItem={({ item }) => {
+                                    renderItem={({ item , index }) => {
                                         return (item.id,
 
                                             <Pressable onPress={() => navigation.navigate('Fooddetail', { foodid: item.id })}>
@@ -90,7 +114,9 @@ function Homescreen({ navigation, id }) {
                                                     </View>
                                                     <Text style={Style.cattag}>{item.name}</Text>
                                                     <Text style={Style.foodprice}>${item.price}</Text>
-                                                    <TouchableOpacity style={Style.buybtn}>
+                                                    <TouchableOpacity onPress={()=>{
+                                                      dispatch(addItemToCart(item));
+                                                    }} style={Style.buybtn}>
                                                         <Text style={Style.buytxt}>add cart</Text>
                                                     </TouchableOpacity>
                                                 </View>
@@ -114,10 +140,10 @@ const Style = StyleSheet.create({
         flex: 1,
         backgroundColor: '#100f1f'
     },
-    loader:{
-        height:windowHeight,
-        backgroundColor:'#100f1f'
-      },
+    loader: {
+        height: windowHeight,
+        backgroundColor: '#100f1f'
+    },
     menupng: {
         height: 10,
         width: 10
@@ -137,6 +163,10 @@ const Style = StyleSheet.create({
         height: 30,
         width: 30
     },
+    uploadpng: {
+        height: 30,
+        width: 30
+    },
     menupngtouch: {
         position: 'absolute',
         height: 30,
@@ -149,6 +179,13 @@ const Style = StyleSheet.create({
         height: 30,
         width: 30,
         right: 50,
+        top: 10
+    },
+    uploadpngtouch: {
+        position: 'absolute',
+        height: 30,
+        width: 30,
+        right: 90,
         top: 10
     },
     foodcathead: {
