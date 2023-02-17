@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, ScrollView, Image, Dimensions, StyleSheet, 
   TouchableOpacity, ActivityIndicator, Alert, BackHandler } from "react-native"
-import { getFooddata } from "../http/storedata";
+import { getFooddata, storeUsersorder } from "../http/storedata";
+import { useDispatch, useSelector } from "react-redux";
+import { addMyFood } from "../newredux/myFoodSlice";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -9,17 +11,19 @@ const windowHeight = Dimensions.get('window').height;
 
 const Fooddetail = ({ navigation, route }) => {
 
-  BackHandler.addEventListener('hardwareBackPress',handlebackbtn)
-
-  function handlebackbtn(){
-    navigation.navigate('Homescreen');
-    return true;
-  }
-
   useEffect(() => {
     getFooddetail();
   }, [])
 
+  const dispatch = useDispatch();
+  const state = useSelector(state => state.food);
+  console.log(state);
+
+  BackHandler.addEventListener('hardwareBackPress',handlebackbtn)
+  function handlebackbtn(){
+    navigation.navigate('Homescreen');
+    return true;
+  }
 
   const food_id = route.params?.foodid;
 
@@ -31,13 +35,13 @@ const Fooddetail = ({ navigation, route }) => {
   const [restname, setRestname] = useState('');
   const [restadd, setRestadd] = useState('');
   const [isloading, setIsloading] = useState(true);
-  const [counter, setCounter] = useState(0);
+  const [counter, setCounter] = useState(1);
 
   async function getFooddetail() {
     const Fooddata = await getFooddata();
     const result = Fooddata.find(x => x.id === food_id);
     console.log("response from food detail", result);
-    
+
     setData(result);
     setUrl(result.url);
     setFoodname(result.name);
@@ -48,6 +52,17 @@ const Fooddetail = ({ navigation, route }) => {
     setFoodcat(result.category);
     setIsloading(false);
   }
+
+  const userOrder = {
+    name:foodname,
+    id:food_id,
+    url:url,
+    restaurant_name:restname,
+    quantity:counter,
+    price:foodprice,
+    category:foodcat,
+    restaurant_address:restadd
+ };
 
   function Incrementer() {
     setCounter(counter + 1);
@@ -60,7 +75,7 @@ const Fooddetail = ({ navigation, route }) => {
 
   function Buybtn() {
     if (counter !== 0) {
-      navigation.navigate('Bill', { food_id, counter, url, foodname, foodprice,restadd, restname,food_id,foodcat })
+      navigation.navigate('Orders',(dispatch(addMyFood(userOrder))))
     }
     else {
       Alert.alert("please select quantity")
@@ -99,9 +114,15 @@ const Fooddetail = ({ navigation, route }) => {
 
               </View>
 
-              <TouchableOpacity onPress={Buybtn} style={Style.buybtn}>
-                <Text style={Style.buytxt}>buy</Text>
-              </TouchableOpacity>
+              <View style={{flexDirection:'row' , justifyContent:'space-around' , width:windowWidth}}>
+                <TouchableOpacity onPress={Buybtn} style={Style.buybtn}>
+                    <Text style={Style.buytxt}>Add to cart</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={Style.buybtn}>
+                    <Text style={Style.buytxt}>Pay</Text>
+                </TouchableOpacity>
+            </View>
             </View>
           </View>
         )
@@ -141,17 +162,17 @@ const Style = StyleSheet.create({
   buybtn: {
     backgroundColor: '#fd9827',
     height: 40,
-    width: windowWidth / 2,
+    width: windowWidth / 3,
     marginTop: 20,
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center'
-  },
-  buytxt: {
+},
+buytxt: {
     color: 'white',
     fontSize: 20
-  },
+},
   quantity: {
     height: 40,
     width: windowWidth / 4,

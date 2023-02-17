@@ -1,52 +1,67 @@
 import React, { useEffect, useState } from "react";
 import {
     Image, ScrollView, StyleSheet, Text, View, Dimensions,
-    TouchableOpacity, StatusBar, FlatList, Pressable, ActivityIndicator, BackHandler
+    TouchableOpacity, StatusBar, FlatList, Pressable, ActivityIndicator, BackHandler, RefreshControl
 } from "react-native"
 import { getFooddata } from "../http/storedata";
 import { useDispatch, useSelector } from "react-redux";
-import { addItemToCart } from "../redux/actions/Action";
+import { addMyFood } from "../newredux/myFoodSlice";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-
-
-
 function Homescreen({ navigation, id }) {
 
-    useEffect(() => {
+    useEffect(() => {                  //FETCH DATA FROM FIREBASE WHILE LOADING
         fetchData();
     }, []);
 
-
-    const dispatch = useDispatch();
-    const items = useSelector(state => state);
+    const items = useSelector(state => state.food);   //USED TO SHOW NO. OF AVAILABLE FOOD IN CART
     console.log(items);
 
-    BackHandler.addEventListener('hardwareBackPress',handlebackbutton)
-
-    BackHandler.removeEventListener('hardwareBackPress',handlebackbutton)
-
-    function handlebackbutton(){
-     BackHandler.exitApp();
-     return true;
-     
+    BackHandler.addEventListener('hardwareBackPress', handlebackbutton) //HANDLES HARDWARE BACKHANDLER
+    function handlebackbutton() {
+        BackHandler.exitApp();
+        return true;
     }
-
 
     const [isfetching, setIsfetching] = useState(true)
     const [data, setData] = useState('');
+    const [cartItem, setCartitem] = useState(false)
+    const [refreshing, setRefreshing] = useState(false);
+    const [catdata, setCatdata] = useState('');
+    const [url, setUrl] = useState('')
 
     async function fetchData() {
-        const fooddata = await getFooddata();
+        const fooddata = await getFooddata();        //FETCH UPLOADED FOOD DATA
         console.log('food on homescreen', fooddata);
         setData(fooddata);
         setIsfetching(false);
+        if (items.length > 0) {
+            setCartitem(true);
+        }
+
+        const unique = fooddata               //GET UNIQUE CATEGORY AND URL OBJECT INSIDE ARRAY 
+            .map(e => e['category'])
+            .map((e, i, final) => final.indexOf(e) === i && i)
+            .filter(obj => fooddata[obj])
+            .map(e => fooddata[e]);
+        setCatdata(unique)
+        console.log(unique.length);
+
     }
-   
+    const onRefresh = () => {      //FOR REFRESHER
+        setRefreshing(true);
+        setIsfetching(true)
+        setTimeout(() => {
+            setRefreshing(false);
+            setIsfetching(false);
+        }, 2000);
+    };
+
     return (
-        <ScrollView style={Style.container}>
+        <ScrollView refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} style={Style.container}>
 
             {isfetching ?
                 (<View><ActivityIndicator style={Style.loader} size={"large"} color='#fd9827' /></View>)
@@ -54,21 +69,27 @@ function Homescreen({ navigation, id }) {
                 (
                     <View>
                         <StatusBar backgroundColor="#100f1f" />
-                        <Image style={Style.headimage} source={require('./foodhead.jpg')} />
+                        <Image style={Style.headimage} source={require('../Images/foodhead.jpg')} />
 
                         <TouchableOpacity onPress={() => navigation.navigate('profile')} style={Style.menupngtouch}>
-                            <Image style={Style.menupng} source={require('./menu.png')} />
+                            <Image style={Style.menupng} source={require('../Images/menu.png')} />
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => navigation.navigate('Upload')} style={Style.cartpngtouch}>
-                            <Image style={Style.cartpng} source={require('./upload.png')} />
+                        <TouchableOpacity onPress={() => navigation.navigate('Upload')} style={Style.uploadpngtouch}>
+                            <Image style={Style.cartpng} source={require('../Images/upload.png')} />
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => navigation.navigate('Orders')} style={Style.uploadpngtouch}>
-                            <Image style={Style.cartpng} source={require('./carts.png')} />
+                        <TouchableOpacity onPress={() => navigation.navigate('Orders')} style={Style.cartpngtouch}>
+                            <Image style={Style.cartpng} source={require('../Images/carts.png')} />
+
+                            <View style={{
+                                height: 18, width: 18, position: 'absolute', backgroundColor: '#100f1f', borderRadius: 20,
+                                marginLeft: 20, bottom: 32, alignItems: 'center', justifyContent: 'center'
+                            }}>
+                                <Text style={{ fontSize: 12, color: '#fd9827' }}>{items.length}</Text>
+                            </View>
+
                         </TouchableOpacity>
-
-
                         <View>
 
                             <View style={{ flexDirection: 'row', alignItems: 'flex-end', marginTop: 20, marginHorizontal: 20 }}>
@@ -77,12 +98,13 @@ function Homescreen({ navigation, id }) {
                             </View>
                             <FlatList
                                 horizontal={true}
-                                data={data}
-                                keyExtractor={(item) => item.id}
+                                data={catdata}
+                                keyExtractor={(item) => item.category}
                                 renderItem={({ item }) => {
+                                    const category = item.category;
                                     return (
-                                        <Pressable>
-                                            <View style={Style.fooditem}>
+                                        <Pressable onPress={() => navigation.navigate('Categorywisefood', { category })}>
+                                            <View>
                                                 <View style={Style.foodcat}>
                                                     <Image style={Style.foodimg} source={{ uri: item.url }} />
                                                 </View>
@@ -104,18 +126,18 @@ function Homescreen({ navigation, id }) {
                                     horizontal={true}
                                     data={data}
                                     keyExtractor={(item) => item.id}
-                                    renderItem={({ item , index }) => {
+                                    renderItem={({ item, index }) => {
                                         return (item.id,
 
                                             <Pressable onPress={() => navigation.navigate('Fooddetail', { foodid: item.id })}>
-                                                <View style={Style.fooditem}>
+                                                <View>
                                                     <View style={Style.foodcat}>
                                                         <Image style={Style.foodimg} source={{ uri: item.url }} />
                                                     </View>
                                                     <Text style={Style.cattag}>{item.name}</Text>
-                                                    <Text style={Style.foodprice}>${item.price}</Text>
-                                                    <TouchableOpacity onPress={()=>{
-                                                      dispatch(addItemToCart(item));
+                                                    <Text style={Style.foodprice}>$ {item.price}</Text>
+                                                    <TouchableOpacity onPress={() => {
+                                                        navigation.navigate('Fooddetail', { foodid: item.id })
                                                     }} style={Style.buybtn}>
                                                         <Text style={Style.buytxt}>add cart</Text>
                                                     </TouchableOpacity>
@@ -138,7 +160,7 @@ export default Homescreen;
 const Style = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#100f1f'
+        backgroundColor: '#100f1f',
     },
     loader: {
         height: windowHeight,
@@ -169,38 +191,51 @@ const Style = StyleSheet.create({
     },
     menupngtouch: {
         position: 'absolute',
-        height: 30,
-        width: 30,
         right: 10,
-        top: 10
+        justifyContent: 'center',
+        height: 50
     },
     cartpngtouch: {
         position: 'absolute',
-        height: 30,
-        width: 30,
-        right: 50,
-        top: 10
+        right: 90,
+        justifyContent: 'center',
+        height: 50,
     },
     uploadpngtouch: {
         position: 'absolute',
-        height: 30,
+        height: 50,
         width: 30,
-        right: 90,
-        top: 10
+        right: 50,
+        justifyContent: 'center',
+    },
+    headimgtxtview: {
+        position: 'absolute',
+        height: windowHeight / 7,
+        width: windowWidth / 2,
+        alignItems: 'center',
+        marginTop: 60,
+        right: 50,
+    },
+    headimgtxt: {
+        position: 'absolute',
+        fontSize: 40,
+        color: 'black',
+        textShadowColor: '#fd9827',
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 20
     },
     foodcathead: {
         color: 'white',
         fontWeight: 'bold',
         fontSize: 20,
     },
-    fooditem: {
-
-    },
     foodcat: {
         height: windowWidth / 3,
         width: windowWidth / 3,
         backgroundColor: 'white',
-        margin: 20,
+        marginTop: 20,
+        marginHorizontal:20,
+        marginBottom:10,
         borderRadius: 20
     },
     foodimg: {
@@ -211,24 +246,25 @@ const Style = StyleSheet.create({
     },
     cattag: {
         color: 'white',
-        marginLeft: 30,
         fontWeight: 'bold',
-        fontSize: 18
+        fontSize: 18,
+        alignSelf:'center'
     },
     foodprice: {
         color: 'white',
-        marginLeft: 30,
+       alignSelf:'center',
         fontSize: 15
     },
     buybtn: {
         backgroundColor: '#fd9827',
         height: 25,
         width: 80,
-        marginLeft: 30,
         marginTop: 5,
         borderRadius: 10,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        marginBottom: 30,
+        alignSelf:'center'
     },
     buytxt: {
         color: 'white'

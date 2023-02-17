@@ -16,7 +16,7 @@ const windowHeight = Dimensions.get('window').height;
             if(response === null){
               navigation.navigate('Firstscreen')
             }
-           else if(response.includes  ('true')){
+           else if(response.includes('true')){
             navigation.navigate('Homescreen')
           }
           else {
@@ -28,7 +28,7 @@ const windowHeight = Dimensions.get('window').height;
 
     return(console.log('splash'),
         <View style={Style.container}>
-            <Image style={Style.Image} source={require('./deliveryboy.png')}/>
+            <Image style={Style.Image} source={require('../Images/deliveryboy.png')}/>
         </View>
     )
 }

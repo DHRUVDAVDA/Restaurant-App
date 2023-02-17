@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BackHandler } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItemToCart } from '../redux/actions/Action';
+import { addMyFood } from '../newredux/myFoodSlice';
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -24,7 +25,7 @@ function Bill({navigation}) {
 const [user , setUser] = useState('');
 
   const dispatch = useDispatch();
-  const state = useSelector(state => state);
+  const state = useSelector(state => state.food);
   console.log('state billing',state);
 
     const route = useRoute();
@@ -67,13 +68,10 @@ const [user , setUser] = useState('');
             })
     
              storeUsersorder(userOrder);
-            navigation.navigate('Orders',dispatch(addItemToCart(userOrder)))
+            navigation.navigate('Orders',dispatch(addMyFood(userOrder)))
         }
     return (
         <View style={Styles.container}>
-            <View style={Styles.headerbar}>
-                <Text style={Styles.headertxt}>Final Billing</Text>
-            </View>
 
             <View style={Styles.img}>
                 <Image style={Styles.img} source={{ uri: url }} />
@@ -135,21 +133,9 @@ const Styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#100f1f'
     },
-    headerbar: {
-        backgroundColor: '#fd9827',
-        height: 30,
-        justifyContent: 'center'
-    },
-    headertxt: {
-        color: 'white',
-        fontSize: 20,
-        alignSelf: 'center',
-        fontWeight: 'bold'
-    },
     img: {
         width: windowWidth,
         height: windowHeight / 4,
-        marginTop: 10
     },
     fields: {
         fontSize: 20,

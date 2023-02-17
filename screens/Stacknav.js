@@ -10,7 +10,7 @@ import Upload from "../data upload/Upload";
 import Fooddetail from "./Fooddetail";
 import Profile from "./Profile";
 import Orders from "./Orders";
-import Bill from "./Billing";
+import Categorywise from "./Categorywise";
 
 const Stacknav = () => {
     
@@ -19,18 +19,52 @@ const Stacknav = () => {
     return (
    
       
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Splashscreen" component={Splash} />
-        <Stack.Screen name="Firstscreen" component={Firstscreen} />
-        <Stack.Screen name="Login" component={Login} />
+      <Stack.Navigator>
+
+        <Stack.Screen name="Splashscreen" component={Splash} options={{headerShown:false}}/>
+
+        <Stack.Screen name="Firstscreen" component={Firstscreen} options={{headerShown:false}}/>
+
+        <Stack.Screen name="Login" component={Login} options={{headerShown:false}}/>
+
         <Stack.Screen name="Signup" component={Signup} />
-        <Stack.Screen name="Homescreen" component={Homescreen} />
+
+        <Stack.Screen name="Homescreen" component={Homescreen} 
+        options={{ title:'Foodie' , headerLeft: ()=>false,
+        headerStyle:{ backgroundColor:'#100f1f'},
+        headerTitleStyle:{ color:'white' },
+        headerTitleAlign:'center',
+        }}/>
+
         <Stack.Screen name="Createnewpswd" component={Createnewpswd} />
-        <Stack.Screen name="Upload" component={Upload} />
-        <Stack.Screen name="Fooddetail" component={Fooddetail} />
-        <Stack.Screen name="profile" component={Profile}/>
-        <Stack.Screen name="Orders" component={Orders}/>
-        <Stack.Screen name="Bill" component={Bill}/>
+
+        <Stack.Screen name="Upload" component={Upload}  options={{ title:'Upload data' , 
+         headerStyle:{ backgroundColor:'#100f1f'},
+         headerTitleStyle:{ color:'white' },
+         headerTintColor:'white' ,
+         headerTitleAlign:'center'
+         }}/>
+
+        <Stack.Screen name="Fooddetail" component={Fooddetail}
+         options={{ title:'Select quantity' , 
+         headerStyle:{ backgroundColor:'#100f1f'},
+         headerTitleStyle:{ color:'white' },
+         headerTintColor:'white' ,
+         headerTitleAlign:'center'
+         }}/>
+        
+        <Stack.Screen name="profile" component={Profile} options={{headerShown:false}}/>
+
+        <Stack.Screen name="Orders" component={Orders}
+        options={{ title:'All Orders' , 
+        headerStyle:{ backgroundColor:'#100f1f'},
+        headerTitleStyle:{ color:'white' },
+        headerTintColor:'white' ,
+        headerTitleAlign:'center',
+        }}/>
+
+        
+        <Stack.Screen name="Categorywisefood" component={Categorywise} options={{headerShown:false}}/>
       </Stack.Navigator>
     
   )

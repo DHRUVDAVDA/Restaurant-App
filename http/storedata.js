@@ -58,7 +58,6 @@ export async function storeUser(userData) {
     console.log( 'result name =>>>> ',result);
     return storeinStorage();
   }
-  
 
  export async function storeImage(image){
   const res = await fetch(
@@ -75,6 +74,7 @@ export async function storeUser(userData) {
     console.log("firebase url",res.url);
     
 };
+
  
 export async function getFooddata(){
   const response=await fetch('https://restaurant-app-ca9a9-default-rtdb.firebaseio.com/food_data.json',{

@@ -11,7 +11,7 @@ function App({ navigation }) {
       <View style={Styles.container} >
          <StatusBar backgroundColor="#100f1f" />
 
-         <Image style={Styles.img} source={require('./cutlery.png')} />
+         <Image style={Styles.img} source={require('../Images/cutlery.png')} />
 
          <Text style={Styles.heading}>FOOD BANK</Text>
          <Text style={Styles.headingline}>Special & Delicious Food</Text>
@@ -24,7 +24,7 @@ function App({ navigation }) {
             <Text style={Styles.btntext2}>Sign up</Text>
          </TouchableOpacity>
 
-         <Image style={Styles.foodimg} source={require('./food.jpg')} />
+         <Image style={Styles.foodimg} source={require('../Images/food.jpg')} />
       </View>
    )
 }
