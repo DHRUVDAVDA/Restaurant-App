@@ -30,7 +30,7 @@ function Homescreen({ navigation, id }) {
     const [cartItem, setCartitem] = useState(false)
     const [refreshing, setRefreshing] = useState(false);
     const [catdata, setCatdata] = useState('');
-    const [url, setUrl] = useState('')
+    
 
     async function fetchData() {
         const fooddata = await getFooddata();        //FETCH UPLOADED FOOD DATA
@@ -40,7 +40,7 @@ function Homescreen({ navigation, id }) {
         if (items.length > 0) {
             setCartitem(true);
         }
-
+        
         const unique = fooddata               //GET UNIQUE CATEGORY AND URL OBJECT INSIDE ARRAY 
             .map(e => e['category'])
             .map((e, i, final) => final.indexOf(e) === i && i)
@@ -52,10 +52,8 @@ function Homescreen({ navigation, id }) {
     }
     const onRefresh = () => {      //FOR REFRESHER
         setRefreshing(true);
-        setIsfetching(true)
         setTimeout(() => {
             setRefreshing(false);
-            setIsfetching(false);
         }, 2000);
     };
 
@@ -160,7 +158,7 @@ export default Homescreen;
 const Style = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#100f1f',
+        backgroundColor: '#100f1f'
     },
     loader: {
         height: windowHeight,

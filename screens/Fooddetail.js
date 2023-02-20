@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, ScrollView, Image, Dimensions, StyleSheet, 
-  TouchableOpacity, ActivityIndicator, Alert, BackHandler } from "react-native"
+  TouchableOpacity, ActivityIndicator, Alert, BackHandler, ToastAndroid } from "react-native"
 import { getFooddata, storeUsersorder } from "../http/storedata";
 import { useDispatch, useSelector } from "react-redux";
 import { addMyFood } from "../newredux/myFoodSlice";
@@ -76,6 +76,10 @@ const Fooddetail = ({ navigation, route }) => {
   function Buybtn() {
     if (counter !== 0) {
       navigation.navigate('Orders',(dispatch(addMyFood(userOrder))))
+      ToastAndroid.showWithGravity('added',
+      ToastAndroid.SHORT,
+      ToastAndroid.CENTER
+       )
     }
     else {
       Alert.alert("please select quantity")

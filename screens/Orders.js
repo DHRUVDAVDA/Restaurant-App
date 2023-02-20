@@ -18,25 +18,28 @@ const Orders = ({ navigation }) => {
     // const [data, setData] = useState('');
     const [total, setTotal] = useState(0);
     const [refreshing, setRefreshing] = useState(false);
-    const [isfetching, setIsfetching] = useState(false)
-
+    const [empty, setEmpty] = useState(false)
 
     const dispatch = useDispatch();
     const cartData = useSelector(state => state.food);
-    
+
     BackHandler.addEventListener('hardwareBackPress', handlebutton)
 
     function handlebutton() {
         navigation.navigate('Homescreen');
         return true;
     }
+    useEffect(() => {
+        if (cartData.length === 0) {
+            setEmpty(true)
+        }
+    },[])
+
 
     const onRefresh = () => {
         setRefreshing(true);
-        setIsfetching(true);
         setTimeout(() => {
             setRefreshing(false);
-            setIsfetching(false);
         }, 2000);
     };
     // async function getOrder() {
@@ -49,71 +52,75 @@ const Orders = ({ navigation }) => {
 
     return (
         <View style={Styles.container}>
-            {isfetching ? (<View><ActivityIndicator /></View>) : (
-                <View style={Styles.container}>
-                    <FlatList
-                        data={cartData}
-                        onRefresh={onRefresh}
-                        refreshing={refreshing}
-                        keyExtractor={(item) => item.id}
-                        renderItem={({ item, index }) => {
-                            const sum = cartData.reduce((accum, item) => accum + item.price * item.quantity, 0);
-                            setTotal(sum);
-                            return (
-                                <Pressable>
-                                    <View style={Styles.card}>
-                                        <View style={Styles.imgview}>
-                                            <Image style={Styles.img} source={{ uri: item.url }} />
-                                        </View>
-                                        <View style={Styles.txtview}>
-                                            <Text style={Styles.txt}>{item.name}</Text>
+            {empty ? (<View style={Styles.optionalmsg}><Text style={Styles.optionaltxt}>No any Food added</Text></View>) :
+                (
+                    <View style={Styles.container}>
 
-                                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-
-                                                <Text style={Styles.txt}>quantity - </Text>
-
-                                                <TouchableOpacity
-                                                    onPress={() => { if(item.quantity == 1){
-                                                        dispatch(deleteMyFood(index))
-                                                    } else{
-                                                        dispatch(decrementQty(item.id))
-                                                    }}} 
-                                                    style={Styles.incrementerbtn}>
-
-                                                    <Text style={Styles.quantitytxt}>-</Text>
-                                                </TouchableOpacity>
-                                                <View style={Styles.counterview}>
-                                                    <Text style={Styles.txt}>{item.quantity}</Text>
-                                                </View>
-
-                                                <TouchableOpacity
-                                                    onPress={() => { dispatch(incrementQty(item.id)) }} style={Styles.incrementerbtn}>
-                                                    <Text style={Styles.quantitytxt}>+</Text>
-                                                </TouchableOpacity>
-
+                        <FlatList
+                            data={cartData}
+                            onRefresh={onRefresh}
+                            refreshing={refreshing}
+                            keyExtractor={(item) => item.id}
+                            renderItem={({ item, index }) => {
+                                return (
+                                    <Pressable>
+                                        <View style={Styles.card}>
+                                            <View style={Styles.imgview}>
+                                                <Image style={Styles.img} source={{ uri: item.url }} />
                                             </View>
+                                            <View style={Styles.txtview}>
+                                                <Text style={Styles.txt}>{item.name}</Text>
 
-                                            <Text style={Styles.txt}>total - ${item.price * item.quantity}</Text>
-                                            <TouchableOpacity onPress={() => { dispatch(deleteMyFood(index)) }}>
-                                                <View>
-                                                    <Image style={Styles.deletepng} source={require('../Images/bin.png')} />
+                                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+
+                                                    <Text style={Styles.txt}>quantity - </Text>
+
+                                                    <TouchableOpacity
+                                                        onPress={() => {
+                                                            if (item.quantity == 1) {
+                                                                dispatch(deleteMyFood(index))
+                                                            } else {
+                                                                dispatch(decrementQty(item.id))
+                                                            }
+                                                        }}
+                                                        style={Styles.incrementerbtn}>
+
+                                                        <Text style={Styles.quantitytxt}>-</Text>
+                                                    </TouchableOpacity>
+                                                    <View style={Styles.counterview}>
+                                                        <Text style={Styles.txt}>{item.quantity}</Text>
+                                                    </View>
+
+                                                    <TouchableOpacity
+                                                        onPress={() => { dispatch(incrementQty(item.id)) }} style={Styles.incrementerbtn}>
+                                                        <Text style={Styles.quantitytxt}>+</Text>
+                                                    </TouchableOpacity>
+
                                                 </View>
-                                            </TouchableOpacity>
+
+                                                <Text style={Styles.txt}>total - ${item.price * item.quantity}</Text>
+                                                <TouchableOpacity onPress={() => { dispatch(deleteMyFood(index)) }}>
+                                                    <View style={Styles.deletepng}>
+                                                        <Image style={Styles.deletepng} source={require('../Images/bin.png')} />
+                                                    </View>
+                                                </TouchableOpacity>
+                                            </View>
                                         </View>
-                                    </View>
-                                </Pressable>
-                            )
-                        }
-                        } />
-                    <View style={Styles.bottomtab}>
-                        <Text style={Styles.bottomtxt}>Amount - $ {total}</Text>
-                        <TouchableOpacity style={Styles.bottombtn}>
-                            <Text style={Styles.bottomtxt}>Pay</Text>
-                        </TouchableOpacity>
+                                    </Pressable>
+                                )
+                            }
+                            } />
+
+                        <View style={Styles.bottomtab}>
+                            <Text style={Styles.bottomtxt}>Amount - $ {cartData.reduce((accum, item) => accum + item.price * item.quantity, 0)}</Text>
+                            <TouchableOpacity style={Styles.bottombtn}>
+                                <Text style={Styles.bottomtxt}>Pay</Text>
+                            </TouchableOpacity>
+                        </View>
+
                     </View>
 
-                </View>
-            )}
+                )}
         </View>
     )
 }
@@ -122,6 +129,16 @@ const Styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#100f1f'
+    },
+    optionalmsg: {
+        justifyContent: 'center',
+        height: '100%',
+        width: windowWidth
+    },
+    optionaltxt: {
+        fontSize: 20,
+        color: 'white',
+        alignSelf: 'center'
     },
     card: {
         width: windowWidth,
@@ -179,7 +196,7 @@ const Styles = StyleSheet.create({
         backgroundColor: 'grey',
         alignItems: 'center',
         borderRadius: 10,
-        justifyContent:'center'
+        justifyContent: 'center'
     },
     incrementerbtn: {
         height: 30,
