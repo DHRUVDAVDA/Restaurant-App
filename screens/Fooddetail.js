@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, ScrollView, Image, Dimensions, StyleSheet, 
   TouchableOpacity, ActivityIndicator, Alert, BackHandler, ToastAndroid } from "react-native"
-import { getFooddata, storeUsersorder } from "../http/storedata";
+import { getFooddata } from "../http/storedata";
 import { useDispatch, useSelector } from "react-redux";
 import { addMyFood } from "../newredux/myFoodSlice";
 
@@ -21,7 +21,7 @@ const Fooddetail = ({ navigation, route }) => {
 
   BackHandler.addEventListener('hardwareBackPress',handlebackbtn)
   function handlebackbtn(){
-    navigation.navigate('Homescreen');
+    navigation.navigate('Toptab');
     return true;
   }
 

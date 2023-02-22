@@ -9,12 +9,10 @@ const windowHeight = Dimensions.get('window').height;
 function Profile({navigation}){
 
   BackHandler.addEventListener('hardwareBackPress',handlebackbtn)
-
   function handlebackbtn(){
-   BackHandler.exitApp();
+   navigation.goBack();
     return true;
   }
-
 
     function updateinStorage(){
         const localUserdata = {

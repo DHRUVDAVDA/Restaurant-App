@@ -46,7 +46,7 @@ function Signup({navigation}) {
            
             console.log('uploaded on firebase',userData);
             storeUser(userData , storeinStorage()); 
-            navigation.navigate('Homescreen');
+            navigation.navigate('Tobtab');
         }
     }
 

@@ -4,13 +4,21 @@ import {
     TouchableOpacity, StatusBar, FlatList, Pressable, ActivityIndicator, BackHandler, RefreshControl
 } from "react-native"
 import { getFooddata } from "../http/storedata";
-import { useDispatch, useSelector } from "react-redux";
-import { addMyFood } from "../newredux/myFoodSlice";
+import { useSelector } from "react-redux";
+import {SliderBox} from 'react-native-image-slider-box'
+import {LogBox} from "react-native";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 function Homescreen({ navigation, id }) {
+
+   
+
+LogBox.ignoreLogs([
+"ViewPropTypes will be removed",
+"ColorPropType will be removed",
+])
 
     useEffect(() => {                  //FETCH DATA FROM FIREBASE WHILE LOADING
         fetchData();
@@ -57,6 +65,13 @@ function Homescreen({ navigation, id }) {
         }, 2000);
     };
 
+    const images = [
+        require('../Images/foodhead.jpg'),
+        require('../Images/foodhead2.jpg'),
+        require('../Images/foodhead3.jpg'),
+        require('../Images/foodhead4.jpg')
+    ]
+
     return (
         <ScrollView refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} style={Style.container}>
@@ -67,8 +82,7 @@ function Homescreen({ navigation, id }) {
                 (
                     <View>
                         <StatusBar backgroundColor="#100f1f" />
-                        <Image style={Style.headimage} source={require('../Images/foodhead.jpg')} />
-
+                        <SliderBox images={images} autoplay={true} circleLoop={true} autoplayInterval={4000}/>
                         <TouchableOpacity onPress={() => navigation.navigate('profile')} style={Style.menupngtouch}>
                             <Image style={Style.menupng} source={require('../Images/menu.png')} />
                         </TouchableOpacity>

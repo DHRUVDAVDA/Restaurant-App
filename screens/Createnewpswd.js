@@ -35,7 +35,7 @@ function Login({ navigation }) {
 
         if (resulttruefalse === true) {
             console.log(result);
-            navigation.navigate('Homescreen');
+            navigation.navigate('Toptab');
         } else {
             Alert.alert("enter valid email")
         }

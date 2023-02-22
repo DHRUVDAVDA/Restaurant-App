@@ -17,7 +17,7 @@ const Categorywise = ({ navigation }) => {
     BackHandler.addEventListener('hardwareBackPress', handlebackbtn)
 
     function handlebackbtn() {
-        navigation.navigate('Homescreen');
+        navigation.navigate('Toptab');
         return true;
     }
 

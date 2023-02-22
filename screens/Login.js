@@ -34,7 +34,7 @@ function Login({navigation}){
       console.log('passsss', resul);
 
      if(result === true && resul === true){
-      navigation.navigate('Homescreen');
+      navigation.navigate('Toptab');
      }
      else{
       Alert.alert("enter valid detail")
