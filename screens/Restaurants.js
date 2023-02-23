@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from "react";
 import {
   Text, View, StyleSheet, Image, TouchableOpacity, Button, TextInput,
-  Dimensions, PermissionsAndroid, FlatList, Pressable ,BackHandler
+  Dimensions, PermissionsAndroid, FlatList, Pressable, BackHandler
 } from 'react-native';
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Callout, Marker } from "react-native-maps";
 import Geolocation from "@react-native-community/geolocation";
 import { Cloves, Mcd, restaurants } from "../sample restaurant/rest";
+import WebView from "react-native-webview";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 
-const Restaurants = ({navigation}) => {
+const Restaurants = ({ navigation }) => {
 
-  BackHandler.addEventListener('hardwareBackPress',handlebackbtn)
-  function handlebackbtn(){
-   navigation.goBack();
+  BackHandler.addEventListener('hardwareBackPress', handlebackbtn)
+  function handlebackbtn() {
+    navigation.goBack();
     return true;
   }
 
@@ -51,16 +52,16 @@ const Restaurants = ({navigation}) => {
     )
     : data;
 
-    function displayMap() {
-      setClick(true);
-      getLocation();
-    }
+  function displayMap() {
+    setClick(true);
+    getLocation();
+  }
 
   return (
     <View style={Style.container}>
-      <View style={{ flexDirection: 'row',justifyContent:'center' , alignItems:'center' }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
 
-        <TextInput onChangeText={(text) => {setSearchText(text)}}
+        <TextInput onChangeText={(text) => { setSearchText(text) }}
           value={searchText} placeholder="search by name" placeholderTextColor='white' style={Style.search}></TextInput>
 
         <TouchableOpacity onPress={() => { displayMap() }}>
@@ -78,14 +79,71 @@ const Restaurants = ({navigation}) => {
             longitudeDelta: 0.0421,
           }}
         >
-          <Marker coordinate={city}>
+          <Marker coordinate={city} title="hallo">
             <View>
-              <Image source={require('../Images/current.png')} style={{ height: 70, width: 70 }} />
+              <Image source={require('../Images/current.png')} style={{ height: 40, width: 40 }} />
             </View>
           </Marker>
-          <Marker coordinate={Mcd} />
-          <Marker coordinate={Cloves} />
+
+          <Marker coordinate={restaurants[0].cords} >
+            <Callout>
+              <View style={{height:100 , width:200}}>
+                <WebView source={{uri:restaurants[0].url}} style={{ height: 100, width: 100}} />
+                <Text>{restaurants[0].name}</Text>
+              </View>
+            </Callout>
+          </Marker>
+
+          <Marker coordinate={restaurants[1].cords} >
+          <Callout>
+              <View>
+                <WebView source={{uri:restaurants[1].url}} style={{ height: 100, width: 100 }} />
+                <Text>{restaurants[1].name}</Text>
+              </View>
+            </Callout>
+          </Marker>
+
+          <Marker coordinate={restaurants[2].cords} >
+          <Callout>
+              <View>
+                <WebView source={{uri:restaurants[2].url}} style={{ height: 100, width: 100 }} />
+                <Text>{restaurants[2].name}</Text>
+              </View>
+            </Callout>
+          </Marker>
+
+          <Marker coordinate={restaurants[3].cords} >
+          <Callout>
+              <View>
+                <WebView source={{uri:restaurants[3].url}} style={{ height: 100, width: 100 }} />
+                <Text>{restaurants[3].name}</Text>
+              </View>
+            </Callout>
+          </Marker>
+
+          <Marker coordinate={restaurants[4].cords} >
+          <Callout>
+              <View>
+                <WebView source={{uri:restaurants[4].url}} style={{ height: 100, width: 100 , alignSelf:'center' }} />
+                <Text>{restaurants[4].name}</Text>
+              </View>
+            </Callout>
+          </Marker>
+
+          <Marker coordinate={restaurants[5].cords} >
+          <Callout>
+              <View>
+                <WebView source={{uri:restaurants[5].url}} style={{ height: 100, width: 100 }} />
+                <Text>{restaurants[5].name}</Text>
+              </View>
+            </Callout>
+          </Marker>
         </MapView>
+
+        
+
+
+
         <TouchableOpacity onPress={() => { setClick(false) }} style={{ position: 'absolute', right: 5 }}>
 
           <Image style={{ height: 30, width: 30 }} source={require('../Images/cross.png')} />
@@ -99,7 +157,7 @@ const Restaurants = ({navigation}) => {
             keyExtractor={(item) => item.name}
             renderItem={({ item }) => {
               return (
-                <Pressable onPress={()=> navigation.navigate('Restaurantdetail' ,{name:item.name})}>
+                <Pressable onPress={() => navigation.navigate('Restaurantdetail', { name: item.name })}>
                   <View style={Style.cardcontainer}>
 
                     <Image source={{ uri: item.url }} style={Style.resimg} />
@@ -134,6 +192,18 @@ const Style = StyleSheet.create({
     flex: 1,
     backgroundColor: '#100f1f'
   },
+  bubble: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#fff',
+    borderRadius: 6,
+    borderColor: '#ccc',
+    borderWidth: 0.5,
+    padding: 15
+  },
+  name: {
+    fontSize: 16,
+    marginBottom: 5
+  },
   search: {
     borderWidth: 1,
     height: 40,
@@ -141,9 +211,9 @@ const Style = StyleSheet.create({
     margin: 10,
     fontSize: 15,
     paddingLeft: 10,
-    borderRadius:15,
-    borderColor:'white',
-    color:'white'
+    borderRadius: 15,
+    borderColor: 'white',
+    color: 'white'
   },
   map: {
     flex: 2
@@ -151,7 +221,7 @@ const Style = StyleSheet.create({
   locationpng: {
     height: 30,
     width: 30,
-    tintColor:'#fd9827'
+    tintColor: '#fd9827'
   },
   cardcontainer: {
     backgroundColor: 'lightgrey',
@@ -182,7 +252,7 @@ const Style = StyleSheet.create({
   clockimg: {
     height: 15,
     width: 15,
-    tintColor:'#fd9827'
+    tintColor: '#fd9827'
   },
   timetxt: {
     marginLeft: 5
@@ -191,12 +261,12 @@ const Style = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 5,
     width: windowWidth / 1.9,
-    height:50
+    height: 50
   },
   addressimg: {
     height: 15,
     width: 15,
-    tintColor:'#fd9827'
+    tintColor: '#fd9827'
   },
   addresstxt: {
     marginLeft: 5

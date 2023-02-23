@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Image, StyleSheet, View, Dimensions, ActivityIndicator } from 'react-native'
+import { Image, StyleSheet, View, Dimensions, ActivityIndicator, Text, StatusBar } from 'react-native'
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { async } from "@firebase/util";
 import Video from 'react-native-video'
-import LottieView from 'lottie-react-native'
+import Lottie from 'lottie-react-native'
+import { color } from "react-native-reanimated";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -29,28 +30,38 @@ function Splash({ navigation }) {
 
   return (console.log('splash'),
     <View style={Style.container}>
-      <LottieView source={require('../Images/splash.json')}
+      <StatusBar backgroundColor={'lightblue'}/>
+      <View style={{height:400 , width:400}}>
+      <Lottie source={require('../Images/splash2.json')}
         autoPlay
-        loop={false}
+        loop={true}
         resizeMode='cover'
         onAnimationFinish={() => {
-          console.log('animation finished')
+        console.log('animation finished')
         }}
        />
+       </View>
+       <Text style={Style.txt}>Foodie</Text>
     </View>
   )
 }
 export default Splash;
 const Style = StyleSheet.create({
   container: {
-    height: windowHeight
+    flex:1,
+    justifyContent:'center',
+    backgroundColor:'lightblue',
+    alignItems:'center'
   },
-  Video: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    opacity: 1
-  }
+  txt:{
+    fontSize:50 , 
+    fontWeight:'bold' ,
+    color:'#fd9827' , 
+    textShadowColor:'white',
+    textShadowOffset: {width: -1, height: 1},
+    textShadowRadius: 10 , 
+    shadowOpacity:0.5 , 
+    position:'absolute' ,
+    bottom:windowHeight/3.6
+}
 })

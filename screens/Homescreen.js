@@ -5,20 +5,18 @@ import {
 } from "react-native"
 import { getFooddata } from "../http/storedata";
 import { useSelector } from "react-redux";
-import {SliderBox} from 'react-native-image-slider-box'
-import {LogBox} from "react-native";
+import { SliderBox } from 'react-native-image-slider-box'
+import { LogBox } from "react-native";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 function Homescreen({ navigation, id }) {
 
-   
-
-LogBox.ignoreLogs([
-"ViewPropTypes will be removed",
-"ColorPropType will be removed",
-])
+    LogBox.ignoreLogs([
+        "ViewPropTypes will be removed",
+        "ColorPropType will be removed",
+    ])
 
     useEffect(() => {                  //FETCH DATA FROM FIREBASE WHILE LOADING
         fetchData();
@@ -38,7 +36,7 @@ LogBox.ignoreLogs([
     const [cartItem, setCartitem] = useState(false)
     const [refreshing, setRefreshing] = useState(false);
     const [catdata, setCatdata] = useState('');
-    
+
 
     async function fetchData() {
         const fooddata = await getFooddata();        //FETCH UPLOADED FOOD DATA
@@ -48,7 +46,7 @@ LogBox.ignoreLogs([
         if (items.length > 0) {
             setCartitem(true);
         }
-        
+
         const unique = fooddata               //GET UNIQUE CATEGORY AND URL OBJECT INSIDE ARRAY 
             .map(e => e['category'])
             .map((e, i, final) => final.indexOf(e) === i && i)
@@ -82,7 +80,7 @@ LogBox.ignoreLogs([
                 (
                     <View>
                         <StatusBar backgroundColor="#100f1f" />
-                        <SliderBox images={images} autoplay={true} circleLoop={true} autoplayInterval={4000}/>
+                        <SliderBox images={images} autoplay={true} circleLoop={true} autoplayInterval={4000} />
                         <TouchableOpacity onPress={() => navigation.navigate('profile')} style={Style.menupngtouch}>
                             <Image style={Style.menupng} source={require('../Images/menu.png')} />
                         </TouchableOpacity>
@@ -246,8 +244,8 @@ const Style = StyleSheet.create({
         width: windowWidth / 3,
         backgroundColor: 'white',
         marginTop: 20,
-        marginHorizontal:20,
-        marginBottom:10,
+        marginHorizontal: 20,
+        marginBottom: 10,
         borderRadius: 20
     },
     foodimg: {
@@ -260,11 +258,11 @@ const Style = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
         fontSize: 18,
-        alignSelf:'center'
+        alignSelf: 'center'
     },
     foodprice: {
         color: 'white',
-       alignSelf:'center',
+        alignSelf: 'center',
         fontSize: 15
     },
     buybtn: {
@@ -276,7 +274,7 @@ const Style = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 30,
-        alignSelf:'center'
+        alignSelf: 'center'
     },
     buytxt: {
         color: 'white'

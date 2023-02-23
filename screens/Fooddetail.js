@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, Image, Dimensions, StyleSheet, 
-  TouchableOpacity, ActivityIndicator, Alert, BackHandler, ToastAndroid } from "react-native"
+import {
+  View, Text, ScrollView, Image, Dimensions, StyleSheet,
+  TouchableOpacity, ActivityIndicator, Alert, BackHandler, ToastAndroid
+} from "react-native"
 import { getFooddata } from "../http/storedata";
 import { useDispatch, useSelector } from "react-redux";
 import { addMyFood } from "../newredux/myFoodSlice";
@@ -19,8 +21,8 @@ const Fooddetail = ({ navigation, route }) => {
   const state = useSelector(state => state.food);
   console.log(state);
 
-  BackHandler.addEventListener('hardwareBackPress',handlebackbtn)
-  function handlebackbtn(){
+  BackHandler.addEventListener('hardwareBackPress', handlebackbtn)
+  function handlebackbtn() {
     navigation.navigate('Toptab');
     return true;
   }
@@ -28,12 +30,6 @@ const Fooddetail = ({ navigation, route }) => {
   const food_id = route.params?.foodid;
 
   const [data, setData] = useState('');
-  const [url, setUrl] = useState('');
-  const [foodname, setFoodname] = useState('');
-  const [foodprice, setFoodprice] = useState('');
-  const [foodcat, setFoodcat] = useState('');
-  const [restname, setRestname] = useState('');
-  const [restadd, setRestadd] = useState('');
   const [isloading, setIsloading] = useState(true);
   const [counter, setCounter] = useState(1);
 
@@ -43,26 +39,19 @@ const Fooddetail = ({ navigation, route }) => {
     console.log("response from food detail", result);
 
     setData(result);
-    setUrl(result.url);
-    setFoodname(result.name);
-    setFoodprice(result.price);
-    setFoodcat(result.category);
-    setRestname(result.restaurant_name);
-    setRestadd(result.restaurant_address);
-    setFoodcat(result.category);
     setIsloading(false);
   }
 
   const userOrder = {
-    name:foodname,
-    id:food_id,
-    url:url,
-    restaurant_name:restname,
-    quantity:counter,
-    price:foodprice,
-    category:foodcat,
-    restaurant_address:restadd
- };
+    name: data.name,
+    id: food_id,
+    url: data.url,
+    restaurant_name: data.restaurant_name,
+    quantity: counter,
+    price: data.price,
+    category: data.category,
+    restaurant_address: data.restaurant_address
+  };
 
   function Incrementer() {
     setCounter(counter + 1);
@@ -75,11 +64,11 @@ const Fooddetail = ({ navigation, route }) => {
 
   function Buybtn() {
     if (counter !== 0) {
-      navigation.navigate('Orders',(dispatch(addMyFood(userOrder))))
+      navigation.navigate('Orders', (dispatch(addMyFood(userOrder))))
       ToastAndroid.showWithGravity('added',
-      ToastAndroid.SHORT,
-      ToastAndroid.CENTER
-       )
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER
+      )
     }
     else {
       Alert.alert("please select quantity")
@@ -90,21 +79,34 @@ const Fooddetail = ({ navigation, route }) => {
     <ScrollView>
       {isloading ? (<View><ActivityIndicator style={Style.loader} size={"large"} color="#fd9827" /></View>)
         : (
-          <View>
-            <View style={Style.container}>
 
-              <View style={Style.headimage}>
-                <Image style={Style.headimage} source={{ uri: url }} />
-              </View>
+          <View style={Style.container}>
 
-              <Text style={Style.foodname}>{foodname}</Text>
-              <Text style={Style.restname}>restaurant name - {restname}</Text>
-              <Text style={Style.restname}>restaurant address - {restadd}</Text>
-              <Text style={Style.restname}>food price - ${foodprice}</Text>
-              <Text style={Style.restname}>Select Quantity</Text>
-              <View style={{ flexDirection: 'row', marginTop: 20 }}>
+            <View style={Style.headimage}>
+              <Image style={Style.headimage} source={{ uri: data.url }} />
+            </View>
 
-                <TouchableOpacity onPress={Decrementer} style={Style.incrementerbtn}>
+            <Text style={Style.foodname}>{data.name}</Text>
+
+            <View style={Style.fieldview}>
+              <Text style={Style.field}>Restaurant name - </Text>
+              <Text style={Style.fieldresponse}>{data.restaurant_name}</Text>
+            </View>
+
+            <View style={Style.fieldview}>
+              <Text style={Style.field}>Restaurant addresss - </Text>
+              <Text style={Style.fieldresponse}>{data.restaurant_address}</Text>
+            </View>
+           
+            <View style={Style.fieldview}>
+              <Text style={Style.field}>Food price - </Text>
+              <Text style={Style.fieldresponse}>{data.price}</Text>
+            </View>
+          
+              <Text style={[Style.field , {alignSelf:'center' , marginTop:10}]}>Select Quantity</Text>
+              <View style={{ flexDirection: 'row', marginTop: 20 , alignSelf:'center'}}> 
+
+            <TouchableOpacity onPress={Decrementer} style={Style.incrementerbtn}>
                   <Text style={Style.quantitytxt}>-</Text>
                 </TouchableOpacity>
 
@@ -118,7 +120,7 @@ const Fooddetail = ({ navigation, route }) => {
 
               </View>
 
-              <View style={{flexDirection:'row' , justifyContent:'space-around' , width:windowWidth}}>
+             <View style={{flexDirection:'row' , justifyContent:'space-around' , width:windowWidth ,}}>
                 <TouchableOpacity onPress={Buybtn} style={Style.buybtn}>
                     <Text style={Style.buytxt}>Add to cart</Text>
                 </TouchableOpacity>
@@ -126,7 +128,6 @@ const Fooddetail = ({ navigation, route }) => {
                 <TouchableOpacity style={Style.buybtn}>
                     <Text style={Style.buytxt}>Pay</Text>
                 </TouchableOpacity>
-            </View>
             </View>
           </View>
         )
@@ -139,7 +140,6 @@ const Style = StyleSheet.create({
   container: {
     height: windowHeight,
     backgroundColor: '#100f1f',
-    alignItems: 'center'
   },
   loader: {
     height: windowHeight,
@@ -148,20 +148,28 @@ const Style = StyleSheet.create({
   headimage: {
     height: windowHeight / 4,
     width: windowWidth,
-
   },
   foodname: {
     fontSize: 30,
     color: 'white',
     fontWeight: 'bold',
-    marginTop: 20,
-    alignSelf: 'center'
+    alignSelf: 'center',
+    marginTop: 10
   },
-  restname: {
-    fontSize: 20,
+  fieldview: {
+    marginLeft:10,
+    marginTop: 10,
+    width: windowWidth,
+    justifyContent: 'center'
+  },
+  field: {
     color: 'white',
-    marginTop: 20,
-    alignSelf: 'center'
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  fieldresponse: {
+    fontSize: 20,
+    color: '#fd9827',
   },
   buybtn: {
     backgroundColor: '#fd9827',
@@ -172,11 +180,11 @@ const Style = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center'
-},
-buytxt: {
+  },
+  buytxt: {
     color: 'white',
     fontSize: 20
-},
+  },
   quantity: {
     height: 40,
     width: windowWidth / 4,
