@@ -1,10 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { Image, StyleSheet, View, Dimensions, ActivityIndicator, Text, StatusBar } from 'react-native'
+import React, { useEffect } from "react";
+import { StyleSheet, View, Dimensions, Text, StatusBar } from 'react-native'
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { async } from "@firebase/util";
-import Video from 'react-native-video'
 import Lottie from 'lottie-react-native'
-import { color } from "react-native-reanimated";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -25,13 +22,14 @@ function Splash({ navigation }) {
           navigation.navigate('Firstscreen')
         }
       });
-    }, 3000)
+    }, 4000)
   })
 
   return (console.log('splash'),
     <View style={Style.container}>
       <StatusBar backgroundColor={'lightblue'}/>
       <View style={{height:400 , width:400}}>
+        
       <Lottie source={require('../Images/splash2.json')}
         autoPlay
         loop={true}

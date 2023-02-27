@@ -80,7 +80,9 @@ function Homescreen({ navigation, id }) {
                 (
                     <View>
                         <StatusBar backgroundColor="#100f1f" />
+
                         <SliderBox images={images} autoplay={true} circleLoop={true} autoplayInterval={4000} />
+                        
                         <TouchableOpacity onPress={() => navigation.navigate('profile')} style={Style.menupngtouch}>
                             <Image style={Style.menupng} source={require('../Images/menu.png')} />
                         </TouchableOpacity>

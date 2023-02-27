@@ -42,11 +42,10 @@ function Signup({navigation}) {
            Alert.alert("enter valid detail")
           
         }
-        else{
-           
+        else{ 
             console.log('uploaded on firebase',userData);
             storeUser(userData , storeinStorage()); 
-            navigation.navigate('Tobtab');
+            navigation.navigate('Toptab');
         }
     }
 

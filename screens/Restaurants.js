@@ -1,187 +1,200 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
-  Text, View, StyleSheet, Image, TouchableOpacity, Button, TextInput,
-  Dimensions, PermissionsAndroid, FlatList, Pressable, BackHandler
+  Text, View, StyleSheet, Image, TouchableOpacity, TextInput,
+  Dimensions, FlatList, Pressable, BackHandler, ActivityIndicator
 } from 'react-native';
-import MapView, { Callout, Marker } from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 import Geolocation from "@react-native-community/geolocation";
-import { Cloves, Mcd, restaurants } from "../sample restaurant/rest";
-import WebView from "react-native-webview";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-
 
 const Restaurants = ({ navigation }) => {
 
   BackHandler.addEventListener('hardwareBackPress', handlebackbtn)
   function handlebackbtn() {
-    navigation.goBack();
+    BackHandler.exitApp();
     return true;
   }
 
-  useEffect(() => {
-    getLocation();
-    setData(restaurants);
-  }, [])
-
-  const [data, setData] = useState();
   const [click, setClick] = useState(false);
-  const [city, setCity] = useState({ latitude: 0, longitude: 0 });
   const [searchText, setSearchText] = useState();
-  const [loc, setLoc] = useState([])
+  const [restaurantData, setRestaurantData] = useState([]);
+  const [fetched, setFetched] = useState(true);
 
-  const getLocation = () => {                 //FETCHING CURRENT LOCATION
+  const flatListRef = useRef(null);
+  const mapRef = useRef(null);
+  const [mapRegion, setMapRegion] = useState({
+    latitude: 23.0356435,
+    longitude: 72.504261,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
+
+  useEffect(() => {                                      //FETCH CURRENTLOCATION
     Geolocation.getCurrentPosition(
       position => {
-        console.log(position);
-        setCity({ latitude: position.coords.latitude, longitude: position.coords.longitude })
+        setMapRegion({ latitude: position.coords.latitude, longitude: position.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421, });
       },
       error => {
-        console.log(error.code, error.message);
-        setLoc(false);
+        console.log(error);
       },
-      { enableHighAccuracy: false, timeout: 15000, maximumAge: 10000 },
+      { enableHighAccuracy: false, timeout: 15000, maximumAge: 1000 },
     );
-    console.log("city", city);
-  };
+  }, []);
+
+  console.log('map region', mapRegion);
+
+  useEffect(() => {          //FETCH NEAREST RESTAURANT DATA
+    if (mapRegion) {
+      const apiUrl = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${mapRegion.latitude},${mapRegion.longitude}&radius=500&type=restaurant&key=AIzaSyBYo5s0uQPFgc8qafyO0Rzejpe78bi4ezw`;
+
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          setRestaurantData(data.results);
+          console.log(data.results.menu);
+          setFetched(false);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  }, [mapRegion]);
 
   const searchFilteredData = searchText                     //FILTER RESTAURANT
-    ? data.filter((x) =>
+    ? restaurantData.filter((x) =>
       x.name.toLowerCase().includes(searchText.toLowerCase())
     )
-    : data;
+    : restaurantData;
 
   function displayMap() {
     setClick(true);
-    getLocation();
   }
+
+  const handleMarkerPress = (restaurant) => {
+    const index = restaurantData.indexOf(restaurant);
+    flatListRef.current.scrollToIndex({ index })
+
+    mapRef.current.animateToRegion({
+      latitude: restaurant.geometry.location.lat,
+      longitude: restaurant.geometry.location.lng,
+      latitudeDelta: 0.005,
+      longitudeDelta: 0.005,
+    });
+  };
 
   return (
     <View style={Style.container}>
-      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
 
-        <TextInput onChangeText={(text) => { setSearchText(text) }}
-          value={searchText} placeholder="search by name" placeholderTextColor='white' style={Style.search}></TextInput>
+      {click ? (
+        <View style={{ flex: 2 }}>
+          <MapView
+            style={Style.map}
+            region={mapRegion}
+            ref={mapRef}
+          >
 
-        <TouchableOpacity onPress={() => { displayMap() }}>
-          <Image style={Style.locationpng} source={require('../Images/location.png')} />
-        </TouchableOpacity>
-      </View>
-
-      {click ? (<View style={{ flex: 2 }}>
-        <MapView
-          style={Style.map}
-          initialRegion={{
-            latitude: city.latitude,
-            longitude: city.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-        >
-          <Marker coordinate={city} title="hallo">
-            <View>
-              <Image source={require('../Images/current.png')} style={{ height: 40, width: 40 }} />
-            </View>
-          </Marker>
-
-          <Marker coordinate={restaurants[0].cords} >
-            <Callout>
-              <View style={{height:100 , width:200}}>
-                <WebView source={{uri:restaurants[0].url}} style={{ height: 100, width: 100}} />
-                <Text>{restaurants[0].name}</Text>
-              </View>
-            </Callout>
-          </Marker>
-
-          <Marker coordinate={restaurants[1].cords} >
-          <Callout>
+            {restaurantData.map((restaurant) => (
+              <Marker
+                key={restaurant.place_id}
+                coordinate={{
+                  latitude: restaurant.geometry.location.lat,
+                  longitude: restaurant.geometry.location.lng,
+                }}
+                title={restaurant.name}
+                description={restaurant.vicinity}
+                onPress={() => handleMarkerPress(restaurant)}
+              />
+            ))}
+            <Marker
+              coordinate={{ latitude: mapRegion.latitude, longitude: mapRegion.longitude }}
+              title="your are here"
+            >
               <View>
-                <WebView source={{uri:restaurants[1].url}} style={{ height: 100, width: 100 }} />
-                <Text>{restaurants[1].name}</Text>
+                <Image
+                  source={require('../Images/current.png')}
+                  style={{ width: 80, height: 80 }}
+                  resizeMode="contain"
+                />
               </View>
-            </Callout>
-          </Marker>
-
-          <Marker coordinate={restaurants[2].cords} >
-          <Callout>
-              <View>
-                <WebView source={{uri:restaurants[2].url}} style={{ height: 100, width: 100 }} />
-                <Text>{restaurants[2].name}</Text>
-              </View>
-            </Callout>
-          </Marker>
-
-          <Marker coordinate={restaurants[3].cords} >
-          <Callout>
-              <View>
-                <WebView source={{uri:restaurants[3].url}} style={{ height: 100, width: 100 }} />
-                <Text>{restaurants[3].name}</Text>
-              </View>
-            </Callout>
-          </Marker>
-
-          <Marker coordinate={restaurants[4].cords} >
-          <Callout>
-              <View>
-                <WebView source={{uri:restaurants[4].url}} style={{ height: 100, width: 100 , alignSelf:'center' }} />
-                <Text>{restaurants[4].name}</Text>
-              </View>
-            </Callout>
-          </Marker>
-
-          <Marker coordinate={restaurants[5].cords} >
-          <Callout>
-              <View>
-                <WebView source={{uri:restaurants[5].url}} style={{ height: 100, width: 100 }} />
-                <Text>{restaurants[5].name}</Text>
-              </View>
-            </Callout>
-          </Marker>
-        </MapView>
-
-        
-
-
-
-        <TouchableOpacity onPress={() => { setClick(false) }} style={{ position: 'absolute', right: 5 }}>
-
-          <Image style={{ height: 30, width: 30 }} source={require('../Images/cross.png')} />
-
-        </TouchableOpacity>
-      </View>)
-        : (<View style={{ flex: 2 }}>
-
-          <FlatList
-            data={searchFilteredData}
-            keyExtractor={(item) => item.name}
-            renderItem={({ item }) => {
-              return (
-                <Pressable onPress={() => navigation.navigate('Restaurantdetail', { name: item.name })}>
-                  <View style={Style.cardcontainer}>
-
-                    <Image source={{ uri: item.url }} style={Style.resimg} />
-
-                    <View style={Style.txtview}>
-
-                      <Text style={Style.resname}>{item.name}</Text>
-
-                      <View style={Style.restiming}>
-                        <Image style={Style.clockimg} source={require('../Images/clock.png')} />
-                        <Text style={Style.timetxt}>{item.timing}</Text>
+            </Marker>
+          </MapView>
+          <View style={{ position: 'absolute', bottom: 55, left: 50, right: 50 }}>
+            <FlatList
+              horizontal
+              pagingEnabled
+              data={restaurantData}
+              ref={flatListRef}
+              keyExtractor={(item) => item.place_id}
+              renderItem={({ item }) => {
+                const photoReference = item.photos && item.photos.length > 0 && item.photos[0].photo_reference;
+                const photoUrl = photoReference && `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photoReference}&key=AIzaSyBYo5s0uQPFgc8qafyO0Rzejpe78bi4ezw`;
+                return (
+                  <TouchableOpacity onPress={() => handleMarkerPress(item)}>
+                    <View style={{ height: windowHeight / 5, width: windowWidth - 100, backgroundColor: 'lightgrey', alignItems: 'center' }}>
+                      <View style={{ flexDirection: 'row', width: windowWidth - 40, justifyContent: 'center' }}>
+                        <Text style={{ fontSize: 15, color: 'black' }}>{item.name} ⭐{item.rating}</Text>
                       </View>
-
-                      <View style={Style.resaddress}>
-                        <Image style={Style.addressimg} source={require('../Images/location.png')} />
-                        <Text style={Style.addresstxt}>{item.address}</Text>
-                      </View>
-
+                      <Image style={{ height: windowHeight / 6, width: windowWidth / 1.5 }} source={{ uri: photoUrl }} />
                     </View>
-                  </View>
-                </Pressable>
-              )
-            }}
-          />
+                  </TouchableOpacity>
+                )
+              }}
+            />
+          </View>
+          <TouchableOpacity onPress={() => { setClick(false) }} style={{ position: 'absolute', right: 5 }}>
+
+            <Image style={{ height: 30, width: 30 }} source={require('../Images/cross.png')} />
+
+          </TouchableOpacity>
+        </View>)
+        : (<View style={Style.container}>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+
+            <TextInput onChangeText={(text) => { setSearchText(text) }}
+              value={searchText} placeholder="search by name" placeholderTextColor='white' style={Style.search}></TextInput>
+
+            <TouchableOpacity onPress={() => { displayMap() }}>
+              <Image style={Style.locationpng} source={require('../Images/location.png')} />
+            </TouchableOpacity>
+          </View>
+          {fetched ? (<View><ActivityIndicator size={"large"} color={'#fd9827'} /></View>)
+            : (<View style={{ marginBottom: 50 }}>
+              <FlatList
+                data={searchFilteredData}
+                keyExtractor={(item) => item.place_id}
+                renderItem={({ item }) => {
+                  const photoReference = item.photos && item.photos.length > 0 && item.photos[0].photo_reference;
+                  const photoUrl = photoReference && `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photoReference}&key=AIzaSyBYo5s0uQPFgc8qafyO0Rzejpe78bi4ezw`;
+                  return (
+                    <Pressable onPress={() => navigation.navigate('Restaurantdetail', { item: item, url: photoUrl })}>
+                      <View style={Style.cardcontainer}>
+                        {photoUrl ? (<Image source={{ uri: photoUrl }} style={Style.resimg} />) : (<View><Text>no image found</Text></View>)}
+
+
+                        <View style={Style.txtview}>
+
+                          <Text style={Style.resname}>{item.name} ⭐{item.rating}</Text>
+
+                          <View style={Style.restiming}>
+                            <Image style={Style.clockimg} source={require('../Images/clock.png')} />
+                            <Text style={Style.timetxt}>{item.opening_hours ? 'Open' : 'Closed'}</Text>
+                          </View>
+
+                          <View style={Style.resaddress}>
+                            <Image style={Style.addressimg} source={require('../Images/location.png')} />
+                            <Text style={Style.addresstxt}>{item.vicinity}</Text>
+                          </View>
+
+                        </View>
+                      </View>
+                    </Pressable>
+                  )
+                }}
+              />
+            </View>)}
+
         </View>)}
     </View>
   )
@@ -241,13 +254,14 @@ const Style = StyleSheet.create({
     marginLeft: 10
   },
   resname: {
+    height: 35,
     fontSize: 15,
     fontWeight: 'bold',
     color: 'black',
+    width: windowWidth / 1.8,
   },
   restiming: {
     flexDirection: 'row',
-    marginTop: 5
   },
   clockimg: {
     height: 15,
@@ -259,9 +273,9 @@ const Style = StyleSheet.create({
   },
   resaddress: {
     flexDirection: 'row',
-    marginTop: 5,
     width: windowWidth / 1.9,
-    height: 50
+    height: 50,
+    marginTop: 5
   },
   addressimg: {
     height: 15,
@@ -269,6 +283,6 @@ const Style = StyleSheet.create({
     tintColor: '#fd9827'
   },
   addresstxt: {
-    marginLeft: 5
+    marginLeft: 5,
   }
 });

@@ -14,6 +14,7 @@ import Categorywise from "./Categorywise";
 import Bottomtab from "./Bottomnavigator";
 import Restaurants from "./Restaurants";
 import Restaurantdetail from "./Restaurantdetail";
+import Restloc from "./restaurantLocation";
 
 const Stacknav = () => {
 
@@ -77,6 +78,8 @@ const Stacknav = () => {
       options={{title:'res'}} />
 
       <Stack.Screen name="Restaurantdetail" component={Restaurantdetail} options={{headerShown:false}}/>
+
+      <Stack.Screen name="Restlocation" component={Restloc} options={{headerShown:false}}/>
     </Stack.Navigator>
 
   )

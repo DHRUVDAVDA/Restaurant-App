@@ -10,6 +10,10 @@ function App({ navigation }) {
    return (
       <View style={Styles.container} >
          <StatusBar backgroundColor="#100f1f" />
+         
+         <TouchableOpacity onPress={() => navigation.navigate('Toptab')}>
+            <Text style={{ fontSize: 20, color: 'white', alignSelf: 'flex-end', margin: 20 }}>SKIP</Text>
+         </TouchableOpacity>
 
          <Image style={Styles.img} source={require('../Images/cutlery.png')} />
 
@@ -38,7 +42,7 @@ const Styles = StyleSheet.create({
       height: 100,
       width: 100,
       alignSelf: 'center',
-      marginTop: 80,
+      marginTop: 60,
    },
    heading: {
       color: 'white',
