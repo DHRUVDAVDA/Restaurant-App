@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   View, Text, ScrollView, Image, Dimensions, StyleSheet,
   TouchableOpacity, ActivityIndicator, Alert, BackHandler, ToastAndroid
-} from "react-native"
+} from "react-native";
 import { getFooddata } from "../http/storedata";
 import { useDispatch, useSelector } from "react-redux";
 import { addMyFood } from "../newredux/myFoodSlice";

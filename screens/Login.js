@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, StyleSheet, Dimensions, Button, TouchableOpacity, Image, ScrollView, Alert, StatusBar } from "react-native"
+import { Text, View, StyleSheet, Dimensions, TouchableOpacity, ScrollView, Alert, StatusBar } from "react-native";
 import Inputfield from "../components/Input";
 import { getdata } from "../http/storedata";
 import AsyncStorage from "@react-native-async-storage/async-storage";

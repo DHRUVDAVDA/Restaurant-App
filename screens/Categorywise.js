@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useRoute } from '@react-navigation/native'
-import { Dimensions, FlatList, Pressable, StyleSheet, Text, View, Image, ActivityIndicator, BackHandler } from 'react-native'
+import { useRoute } from '@react-navigation/native';
+import { Dimensions, FlatList, Pressable, StyleSheet, Text, View, Image, ActivityIndicator, BackHandler } from 'react-native';
 import { getFooddata } from "../http/storedata";
 
 

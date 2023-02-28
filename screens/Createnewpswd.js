@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Text, View, StyleSheet, Dimensions, Button, TouchableOpacity, Image, ScrollView, Alert, StatusBar } from "react-native"
+import { Text, View, StyleSheet, Dimensions, TouchableOpacity, Alert, StatusBar } from "react-native";
 import Inputfield from "../components/Input";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { getdata, updatePassword } from "../http/storedata";
 import { useRoute } from "@react-navigation/native";
 

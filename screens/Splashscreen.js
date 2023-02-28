@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import { StyleSheet, View, Dimensions, Text, StatusBar } from 'react-native'
+import { StyleSheet, View, Dimensions, Text, StatusBar } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Lottie from 'lottie-react-native'
+import Lottie from 'lottie-react-native';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;

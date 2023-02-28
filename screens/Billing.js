@@ -1,11 +1,10 @@
 import { useRoute } from '@react-navigation/native';
-import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity } from 'react-native'
-import { getUserfrominternal, getdata, storeUsersorder } from '../http/storedata';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity } from 'react-native';
+import { getdata, storeUsersorder } from '../http/storedata';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BackHandler } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { addItemToCart } from '../redux/actions/Action';
 import { addMyFood } from '../newredux/myFoodSlice';
 
 

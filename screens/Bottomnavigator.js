@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Homescreen from "./Homescreen";
-import { Image } from 'react-native'
+import { Image } from 'react-native';
 import Restaurants from "./Restaurants";
 
 const Tab = createBottomTabNavigator();

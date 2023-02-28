@@ -1,11 +1,6 @@
-import { useRoute } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, Dimensions, Image, FlatList, Pressable, TouchableOpacity, Button, BackHandler, ScrollView } from 'react-native'
-import { getOrderdata } from '../http/storedata';
-import { ActivityIndicator } from 'react-native-paper';
-import { Reducers } from '../redux/reducers/Reducers';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Dimensions, Image, FlatList, Pressable, TouchableOpacity, BackHandler } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { incrementCount, removeItemFromCart } from '../redux/actions/Action';
 import { decrementQty, deleteMyFood, incrementQty } from '../newredux/myFoodSlice';
 
 const windowWidth = Dimensions.get('window').width;

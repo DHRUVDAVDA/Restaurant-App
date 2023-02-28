@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { Text, View, StyleSheet, Dimensions, Button, Image, ScrollView , Alert ,TextInput , TouchableOpacity, StatusBar } from "react-native"
+import { Text, View, StyleSheet, Dimensions, ScrollView, Alert, TextInput, TouchableOpacity, StatusBar } from "react-native";
 import { storeUser } from "../http/storedata";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { async } from "@firebase/util";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;

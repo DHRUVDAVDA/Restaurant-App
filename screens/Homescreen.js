@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import {
     Image, ScrollView, StyleSheet, Text, View, Dimensions,
     TouchableOpacity, StatusBar, FlatList, Pressable, ActivityIndicator, BackHandler, RefreshControl
-} from "react-native"
+} from "react-native";
 import { getFooddata } from "../http/storedata";
 import { useSelector } from "react-redux";
-import { SliderBox } from 'react-native-image-slider-box'
+import { SliderBox } from 'react-native-image-slider-box';
 import { LogBox } from "react-native";
 
 const windowWidth = Dimensions.get('window').width;

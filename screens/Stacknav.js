@@ -1,8 +1,8 @@
-import React from "react"
+import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Splash from "./Splashscreen";
 import Login from "./Login";
-import Firstscreen from "./Firstscreen"
+import Firstscreen from "./Firstscreen";
 import Signup from "./Signup";
 import Homescreen from "./Homescreen";
 import Createnewpswd from "./Createnewpswd";

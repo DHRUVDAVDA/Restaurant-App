@@ -1,6 +1,5 @@
 import React from "react";
-import { View, Image, StyleSheet, Text, Button, TouchableOpacity, Dimensions, StatusBar } from "react-native"
-import Login from "./Login";
+import { View, Image, StyleSheet, Text, TouchableOpacity, Dimensions, StatusBar } from "react-native";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;

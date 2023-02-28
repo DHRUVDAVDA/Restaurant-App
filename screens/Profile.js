@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {StyleSheet, Text, View , Dimensions ,TouchableOpacity, BackHandler,Image} from 'react-native'
-import { getdata } from "../http/storedata";
+import { StyleSheet, Text, View, Dimensions, TouchableOpacity, BackHandler } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 

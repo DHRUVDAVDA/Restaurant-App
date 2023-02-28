@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Dimensions, Text, Image, BackHandler, ActivityIndicator, TouchableOpacity } from 'react-native'
-import MapView, { Marker } from "react-native-maps";
+import { View, StyleSheet, Dimensions, Text, Image, BackHandler, ActivityIndicator, TouchableOpacity } from 'react-native';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
