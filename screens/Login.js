@@ -42,12 +42,12 @@ function Login({ navigation }) {
    async function Authentication() {
       const usersdata = await getdata();
       console.log('userdataaaa', usersdata);
-      const result = usersdata.some(x => x.email === email);
+      const Email = usersdata.some(x => x.email === email);
       console.log("resssssss", result);
-      const resul = usersdata.some(x => x.password === password);
+      const Password = usersdata.some(x => x.password === password);
       console.log('passsss', resul);
 
-      if (result === true && resul === true) {
+      if (Email === true && Password === true) {
          navigation.navigate('Toptab');
          storeinStorage();
       }

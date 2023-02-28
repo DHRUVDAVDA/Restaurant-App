@@ -37,7 +37,7 @@ const Stacknav = () => {
       options={{headerShown:false}}
          />
 
-      <Stack.Screen name="Homescreen" component={Homescreen}
+      <Stack.Screen name="Homescreen" component={Homescreen} options={{headerShown:false}}
         />
 
       <Stack.Screen name="Createnewpswd" component={Createnewpswd} />

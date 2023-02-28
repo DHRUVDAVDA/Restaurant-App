@@ -62,6 +62,10 @@ const Fooddetail = ({ navigation, route }) => {
     }
   }
 
+  function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
   function Buybtn() {
     if (counter !== 0) {
       navigation.navigate('Orders', (dispatch(addMyFood(userOrder))))
@@ -73,7 +77,10 @@ const Fooddetail = ({ navigation, route }) => {
     else {
       Alert.alert("please select quantity")
     }
+    
   }
+
+  
 
   return (
     <ScrollView>
@@ -86,7 +93,7 @@ const Fooddetail = ({ navigation, route }) => {
               <Image style={Style.headimage} source={{ uri: data.url }} />
             </View>
 
-            <Text style={Style.foodname}>{data.name}</Text>
+            <Text style={Style.foodname}>{capitalizeFirstLetter(data.name)}</Text>
 
             <View style={Style.fieldview}>
               <Text style={Style.field}>Restaurant name - </Text>

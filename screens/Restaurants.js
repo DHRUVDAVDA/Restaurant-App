@@ -72,7 +72,7 @@ const Restaurants = ({ navigation }) => {
     setClick(true);
   }
 
-  const handleMarkerPress = (restaurant) => {
+  const handleMarkerPress = (restaurant) => {           //HANDLES MARKER PRESS OF FLATLIST PRESS
     const index = restaurantData.indexOf(restaurant);
     flatListRef.current.scrollToIndex({ index })
 
@@ -120,7 +120,7 @@ const Restaurants = ({ navigation }) => {
               </View>
             </Marker>
           </MapView>
-          <View style={{ position: 'absolute', bottom: 55, left: 50, right: 50 }}>
+          <View style={Style.Flatlistonmap}>
             <FlatList
               horizontal
               pagingEnabled
@@ -132,11 +132,11 @@ const Restaurants = ({ navigation }) => {
                 const photoUrl = photoReference && `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photoReference}&key=AIzaSyBYo5s0uQPFgc8qafyO0Rzejpe78bi4ezw`;
                 return (
                   <TouchableOpacity onPress={() => handleMarkerPress(item)}>
-                    <View style={{ height: windowHeight / 5, width: windowWidth - 100, backgroundColor: 'lightgrey', alignItems: 'center' }}>
-                      <View style={{ flexDirection: 'row', width: windowWidth - 40, justifyContent: 'center' }}>
-                        <Text style={{ fontSize: 15, color: 'black' }}>{item.name} ⭐{item.rating}</Text>
+                    <View style={Style.Flatcard}>
+                      <View style={Style.Flattxtimgcontainer}>
+                        <Text style={Style.Flattxt}>{item.name} ⭐{item.rating}</Text>
                       </View>
-                      <Image style={{ height: windowHeight / 6, width: windowWidth / 1.5 }} source={{ uri: photoUrl }} />
+                      <Image style={Style.Flatimg} source={{ uri: photoUrl }} />
                     </View>
                   </TouchableOpacity>
                 )
@@ -153,15 +153,16 @@ const Restaurants = ({ navigation }) => {
           <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
 
             <TextInput onChangeText={(text) => { setSearchText(text) }}
-              value={searchText} placeholder="search by name" placeholderTextColor='white' style={Style.search}></TextInput>
+              value={searchText} placeholder="Search by name" placeholderTextColor='white' style={Style.search}></TextInput>
 
             <TouchableOpacity onPress={() => { displayMap() }}>
               <Image style={Style.locationpng} source={require('../Images/location.png')} />
             </TouchableOpacity>
           </View>
           {fetched ? (<View><ActivityIndicator size={"large"} color={'#fd9827'} /></View>)
-            : (<View style={{ marginBottom: 50 }}>
+            : (<View>
               <FlatList
+                contentContainerStyle={{ paddingBottom: 80 }}
                 data={searchFilteredData}
                 keyExtractor={(item) => item.place_id}
                 renderItem={({ item }) => {
@@ -170,23 +171,18 @@ const Restaurants = ({ navigation }) => {
                   return (
                     <Pressable onPress={() => navigation.navigate('Restaurantdetail', { item: item, url: photoUrl })}>
                       <View style={Style.cardcontainer}>
-                        {photoUrl ? (<Image source={{ uri: photoUrl }} style={Style.resimg} />) : (<View><Text>no image found</Text></View>)}
 
+                        {photoUrl ? (<Image source={{ uri: photoUrl }} style={Style.resimg} />) : (<View><Text>no image found</Text></View>)}
 
                         <View style={Style.txtview}>
 
                           <Text style={Style.resname}>{item.name} ⭐{item.rating}</Text>
 
-                          <View style={Style.restiming}>
-                            <Image style={Style.clockimg} source={require('../Images/clock.png')} />
-                            <Text style={Style.timetxt}>{item.opening_hours ? 'Open' : 'Closed'}</Text>
-                          </View>
+                        </View>
 
-                          <View style={Style.resaddress}>
-                            <Image style={Style.addressimg} source={require('../Images/location.png')} />
-                            <Text style={Style.addresstxt}>{item.vicinity}</Text>
-                          </View>
-
+                        <View style={Style.timeview}>
+                          <Image source={require('../Images/clock.png')} style={Style.clockimg} />
+                          <Text style={Style.timetxt}>{item.opening_hours ? 'Open' : 'Closed'}</Text>
                         </View>
                       </View>
                     </Pressable>
@@ -236,40 +232,88 @@ const Style = StyleSheet.create({
     width: 30,
     tintColor: '#fd9827'
   },
+  Flatlistonmap: {
+    position: 'absolute',
+    bottom: 55,
+    left: 50,
+    right: 50
+  },
+  Flatcard: {
+    height: windowHeight / 5,
+    width: windowWidth - 100,
+    backgroundColor: 'lightgrey',
+    alignItems: 'center'
+  },
+  Flattxtimgcontainer: {
+    flexDirection: 'row',
+    width: windowWidth - 40,
+    justifyContent: 'center'
+  },
+  Flattxt: {
+    fontSize: 15,
+    color: 'black'
+  },
+  Flatimg: {
+    height: windowHeight / 6,
+    width: windowWidth / 1.5
+  },
   cardcontainer: {
     backgroundColor: 'lightgrey',
-    margin: 10,
-    height: windowHeight / 6,
-    flexDirection: 'row',
+    marginTop: 15,
+    height: windowHeight / 4.2,
+    width: windowWidth - 40,
     alignItems: 'center',
-    borderRadius: 20
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    alignSelf: 'center'
   },
   resimg: {
-    height: windowHeight / 8,
-    width: windowWidth / 4,
+    height: windowHeight / 4.2,
+    width: windowWidth - 40,
     marginLeft: 10,
-    borderRadius: 20
+    marginRight: 10,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   txtview: {
-    marginLeft: 10
+    width: windowWidth - 40,
+    opacity: 0.8,
+    bottom: 0,
+    position: 'absolute',
+    backgroundColor: 'lightgrey',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingLeft: 10,
   },
   resname: {
-    height: 35,
-    fontSize: 15,
+    fontSize: 17,
     fontWeight: 'bold',
     color: 'black',
-    width: windowWidth / 1.8,
+    alignSelf: 'center'
   },
-  restiming: {
+  timeview: {
+    width: windowWidth / 5,
+    height: windowHeight / 28,
+    position: 'absolute',
     flexDirection: 'row',
+    right: 7,
+    top: 7,
+    backgroundColor: 'black',
+    opacity: 0.7,
+    borderRadius: 9,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   clockimg: {
-    height: 15,
-    width: 15,
+    height: 20,
+    width: 20,
     tintColor: '#fd9827'
   },
   timetxt: {
-    marginLeft: 5
+    marginLeft: 3,
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 15
   },
   resaddress: {
     flexDirection: 'row',

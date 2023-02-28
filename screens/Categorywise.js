@@ -35,9 +35,13 @@ const Categorywise = ({ navigation }) => {
         setFetching(false)
     }
 
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
     return (
         <View style={Style.container}>
-            <Text style={Style.head}>{category}</Text>
+            <Text style={Style.head}>{category.toUpperCase()}</Text>
             {fetching ? (<View><ActivityIndicator style={Style.loader} size={"large"} color='#fd9827' /></View>) : (
                 <FlatList
                     data={data}
@@ -50,9 +54,19 @@ const Categorywise = ({ navigation }) => {
                                         <Image style={Style.img} source={{ uri: item.url }} />
                                     </View>
                                     <View style={Style.txtview}>
-                                        <Text style={Style.txt}>{item.name}</Text>
-                                        <Text style={Style.txt}>from - {item.restaurant_name}</Text>
-                                        <Text style={Style.txt}>price - {item.price}</Text>
+                                       
+                                        <Text style={[Style.txt,{fontWeight:'bold',color:'white'}]}>{capitalizeFirstLetter(item.name)}</Text>
+
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <Text style={Style.txtfields}>From - </Text>
+                                            <Text style={[Style.txt, { color: '#fd9827' }]}>{item.restaurant_name}</Text>
+                                        </View>
+
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <Text style={Style.txtfields}>Price - </Text>
+                                            <Text style={[Style.txt, { color: '#fd9827' }]}>$ {item.price}</Text>
+                                        </View>
+
                                     </View>
                                 </View>
                             </Pressable>
@@ -71,7 +85,7 @@ const Style = StyleSheet.create({
         backgroundColor: '#100f1f'
     },
     head: {
-        fontSize: 30,
+        fontSize: 25,
         color: 'white',
         alignSelf: 'center'
     },
@@ -88,16 +102,16 @@ const Style = StyleSheet.create({
         flexDirection: 'row',
     },
     imgview: {
-        height: windowHeight / 7,
-        width: windowWidth / 3,
+        height: windowHeight / 8,
+        width: windowWidth / 4,
         backgroundColor: 'white',
         borderRadius: 20,
         alignSelf: 'center',
         marginLeft: 20
     },
     img: {
-        height: windowHeight / 7,
-        width: windowWidth / 3,
+        height: windowHeight / 8,
+        width: windowWidth / 4,
         backgroundColor: 'white',
         borderRadius: 20,
         alignSelf: 'center'
@@ -106,8 +120,13 @@ const Style = StyleSheet.create({
         marginLeft: 20,
         justifyContent: 'center',
     },
+    txtfields: {
+        fontSize: 20,
+        color: 'white',
+    },
     txt: {
         fontSize: 20,
-        color: 'white'
+        color: 'white',
+        width: windowWidth / 2
     }
 })

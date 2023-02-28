@@ -13,7 +13,6 @@ const Restaurantdetail = ({ navigation, route }) => {
     const [fetching, setFetching] = useState(true);
     const [data, setData] = useState();
     const [url, setUrl] = useState();
-    const [clickloc, setClickloc] = useState(false);
     const [lat, setLat] = useState();
     const [lng, setLng] = useState();
 

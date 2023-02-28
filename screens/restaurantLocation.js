@@ -11,7 +11,7 @@ const Restloc = ({ navigation, route }) => {
 
     
     useEffect(() => {
-        Geolocation.getCurrentPosition(
+        Geolocation.getCurrentPosition(                                   //GET CURRENT LOCATION
             position => {
                 setCrnt({ latitude: position.coords.latitude, longitude: position.coords.longitude })
             }

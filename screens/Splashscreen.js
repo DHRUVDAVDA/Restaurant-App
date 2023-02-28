@@ -10,7 +10,7 @@ function Splash({ navigation }) {
 
   useEffect(() => {
     setTimeout(() => {
-      AsyncStorage.getItem('user').then((response) => {
+      AsyncStorage.getItem('user').then((response) => {               //GETTING STORED DATA OF USER FROM ASYNC STORAGE
         console.log(response);
         if (response === null) {
           navigation.navigate('Firstscreen')

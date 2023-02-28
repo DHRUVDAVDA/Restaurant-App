@@ -31,7 +31,7 @@ function Homescreen({ navigation, id }) {
         return true;
     }
 
-    const [isfetching, setIsfetching] = useState(true)
+    const [isfetching, setIsfetching] = useState(true);
     const [data, setData] = useState('');
     const [cartItem, setCartitem] = useState(false)
     const [refreshing, setRefreshing] = useState(false);
@@ -70,10 +70,12 @@ function Homescreen({ navigation, id }) {
         require('../Images/foodhead4.jpg')
     ]
 
-    return (
-        <ScrollView refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} style={Style.container}>
+    function capitalizeFirstLetter(string) {                //TO CAPITALIZE FIRST LETTER
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
 
+    return (
+        <View style={Style.container}>
             {isfetching ?
                 (<View><ActivityIndicator style={Style.loader} size={"large"} color='#fd9827' /></View>)
                 :
@@ -81,90 +83,107 @@ function Homescreen({ navigation, id }) {
                     <View>
                         <StatusBar backgroundColor="#100f1f" />
 
-                        <SliderBox images={images} autoplay={true} circleLoop={true} autoplayInterval={4000} />
-                        
-                        <TouchableOpacity onPress={() => navigation.navigate('profile')} style={Style.menupngtouch}>
-                            <Image style={Style.menupng} source={require('../Images/menu.png')} />
-                        </TouchableOpacity>
+                        <View style={Style.headerview}>
 
-                        <TouchableOpacity onPress={() => navigation.navigate('Upload')} style={Style.uploadpngtouch}>
-                            <Image style={Style.cartpng} source={require('../Images/upload.png')} />
-                        </TouchableOpacity>
+                            <View style={{ position: 'absolute', left: 10, alignSelf: 'center' }}>
 
-                        <TouchableOpacity onPress={() => navigation.navigate('Orders')} style={Style.cartpngtouch}>
-                            <Image style={Style.cartpng} source={require('../Images/carts.png')} />
+                                <TouchableOpacity onPress={() => navigation.navigate('profile')}>
+                                    <Image style={Style.menupng} source={require('../Images/menu.png')} />
+                                </TouchableOpacity>
 
-                            <View style={{
-                                height: 18, width: 18, position: 'absolute', backgroundColor: '#100f1f', borderRadius: 20,
-                                marginLeft: 20, bottom: 32, alignItems: 'center', justifyContent: 'center'
-                            }}>
-                                <Text style={{ fontSize: 12, color: '#fd9827' }}>{items.length}</Text>
                             </View>
 
-                        </TouchableOpacity>
-                        <View>
+                            <Text style={Style.headertxt}>Foodie</Text>
 
-                            <View style={{ flexDirection: 'row', alignItems: 'flex-end', marginTop: 20, marginHorizontal: 20 }}>
-                                <Text style={Style.foodcathead}>Food category</Text>
-                                <View style={{ flex: 1, height: 1, backgroundColor: 'white' }}></View>
+                            <View style={Style.headericonview}>
+
+                                <TouchableOpacity onPress={() => navigation.navigate('Orders')}>
+                                    <Image style={Style.cartpng} source={require('../Images/carts.png')} />
+
+                                    <View style={Style.headercounter}>
+                                        <Text style={{ fontSize: 12, color: '#fd9827' }}>{items.length}</Text>
+                                    </View>
+
+                                </TouchableOpacity>
+
+                                <TouchableOpacity onPress={() => navigation.navigate('Upload')}>
+                                    <Image style={Style.uploadpng} source={require('../Images/upload.png')} />
+                                </TouchableOpacity>
+
                             </View>
-                            <FlatList
-                                horizontal={true}
-                                data={catdata}
-                                keyExtractor={(item) => item.category}
-                                renderItem={({ item }) => {
-                                    const category = item.category;
-                                    return (
-                                        <Pressable onPress={() => navigation.navigate('Categorywisefood', { category })}>
-                                            <View>
-                                                <View style={Style.foodcat}>
-                                                    <Image style={Style.foodimg} source={{ uri: item.url }} />
-                                                </View>
-                                                <Text style={Style.cattag}>{item.category}</Text>
-                                            </View>
-                                        </Pressable>
-                                    )
-                                }
-                                } />
-                            <ScrollView>
+                        </View>
 
-                                <View style={{ flexDirection: 'row', alignItems: 'flex-end', marginTop: 20, marginHorizontal: 20 }}>
-                                    <Text style={Style.foodcathead}>Food</Text>
-                                    <View style={{ flex: 1, height: 1, backgroundColor: 'white' }}></View>
+                        <ScrollView refreshControl={
+                            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+
+
+                            <SliderBox images={images} autoplay={true} circleLoop={true} autoplayInterval={4000} />
+
+                            <View>
+
+                                <View style={Style.foodcatheadview}>
+                                    <Text style={Style.foodcathead}>Food category</Text>
+                                    <View style={Style.line}></View>
                                 </View>
-
-
                                 <FlatList
                                     horizontal={true}
-                                    data={data}
-                                    keyExtractor={(item) => item.id}
-                                    renderItem={({ item, index }) => {
-                                        return (item.id,
-
-                                            <Pressable onPress={() => navigation.navigate('Fooddetail', { foodid: item.id })}>
+                                    data={catdata}
+                                    keyExtractor={(item) => item.category}
+                                    renderItem={({ item }) => {
+                                        const category = item.category;
+                                        return (
+                                            <Pressable onPress={() => navigation.navigate('Categorywisefood', { category })}>
                                                 <View>
                                                     <View style={Style.foodcat}>
                                                         <Image style={Style.foodimg} source={{ uri: item.url }} />
                                                     </View>
-                                                    <Text style={Style.cattag}>{item.name}</Text>
-                                                    <Text style={Style.foodprice}>$ {item.price}</Text>
-                                                    <TouchableOpacity onPress={() => {
-                                                        navigation.navigate('Fooddetail', { foodid: item.id })
-                                                    }} style={Style.buybtn}>
-                                                        <Text style={Style.buytxt}>add cart</Text>
-                                                    </TouchableOpacity>
+                                                    <Text style={Style.cattag}>{capitalizeFirstLetter(item.category)}</Text>
                                                 </View>
                                             </Pressable>
-
                                         )
                                     }
                                     } />
+                                <ScrollView>
 
-                            </ScrollView>
-                        </View>
+                                    <View style={Style.foodcatheadview}>
+                                        <Text style={Style.foodcathead}>Food</Text>
+                                        <View style={Style.line}></View>
+                                    </View>
+
+
+                                    <FlatList
+                                        contentContainerStyle={{ paddingBottom: 60 }}
+                                        horizontal={true}
+                                        data={data}
+                                        keyExtractor={(item) => item.id}
+                                        renderItem={({ item, index }) => {
+                                            return (item.id,
+
+                                                <Pressable onPress={() => navigation.navigate('Fooddetail', { foodid: item.id })}>
+                                                    <View>
+                                                        <View style={Style.foodcat}>
+                                                            <Image style={Style.foodimg} source={{ uri: item.url }} />
+                                                        </View>
+                                                        <Text style={Style.cattag}>{capitalizeFirstLetter(item.name)}</Text>
+                                                        <Text style={Style.foodprice}>$ {item.price}</Text>
+                                                        <TouchableOpacity onPress={() => {
+                                                            navigation.navigate('Fooddetail', { foodid: item.id })
+                                                        }} style={Style.buybtn}>
+                                                            <Text style={Style.buytxt}>add cart</Text>
+                                                        </TouchableOpacity>
+                                                    </View>
+                                                </Pressable>
+
+                                            )
+                                        }
+                                        } />
+
+                                </ScrollView>
+                            </View>
+                        </ScrollView>
                     </View>
                 )}
-        </ScrollView>
+        </View>
     );
 }
 export default Homescreen;
@@ -178,15 +197,35 @@ const Style = StyleSheet.create({
         height: windowHeight,
         backgroundColor: '#100f1f'
     },
-    menupng: {
-        height: 10,
-        width: 10
-    },
-    headimage: {
-        height: windowHeight / 4,
+    headerview: {
+        height: 50,
         width: windowWidth,
-        borderBottomLeftRadius: 50,
-        borderBottomRightRadius: 50,
+        backgroundColor: '#100f1f',
+        flexDirection: 'row',
+        justifyContent: 'center'
+    },
+    headertxt: {
+        fontSize: 20,
+        color: 'white',
+        alignSelf: 'center',
+        fontWeight: 'bold'
+    },
+    headericonview: {
+        flexDirection: 'row',
+        position: 'absolute',
+        right: 10,
+        alignSelf: 'center'
+    },
+    headercounter: {
+        height: 18,
+        width: 18,
+        position: 'absolute',
+        backgroundColor: '#100f1f',
+        borderRadius: 20,
+        marginLeft: 20,
+        bottom: 25,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     menupng: {
         height: 30,
@@ -199,60 +238,39 @@ const Style = StyleSheet.create({
     },
     uploadpng: {
         height: 30,
-        width: 30
-    },
-    menupngtouch: {
-        position: 'absolute',
-        right: 10,
-        justifyContent: 'center',
-        height: 50
-    },
-    cartpngtouch: {
-        position: 'absolute',
-        right: 90,
-        justifyContent: 'center',
-        height: 50,
-    },
-    uploadpngtouch: {
-        position: 'absolute',
-        height: 50,
         width: 30,
-        right: 50,
-        justifyContent: 'center',
+        marginHorizontal: 10
     },
-    headimgtxtview: {
-        position: 'absolute',
-        height: windowHeight / 7,
-        width: windowWidth / 2,
+    foodcatheadview: {
+        flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 60,
-        right: 50,
-    },
-    headimgtxt: {
-        position: 'absolute',
-        fontSize: 40,
-        color: 'black',
-        textShadowColor: '#fd9827',
-        textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 20
+        marginTop: 20,
+        marginHorizontal: 20
     },
     foodcathead: {
         color: 'white',
         fontWeight: 'bold',
         fontSize: 20,
     },
+    line: {
+        marginLeft: 5,
+        flex: 1,
+        height: 1,
+        backgroundColor: 'white',
+    },
     foodcat: {
-        height: windowWidth / 3,
-        width: windowWidth / 3,
+        height: windowWidth / 4,
+        width: windowWidth / 4,
         backgroundColor: 'white',
         marginTop: 20,
         marginHorizontal: 20,
         marginBottom: 10,
-        borderRadius: 20
+        borderRadius: 20,
+        borderColor: 'white'
     },
     foodimg: {
-        height: windowWidth / 3,
-        width: windowWidth / 3,
+        height: windowWidth / 4,
+        width: windowWidth / 4,
         backgroundColor: 'white',
         borderRadius: 20
     },
@@ -281,5 +299,4 @@ const Style = StyleSheet.create({
     buytxt: {
         color: 'white'
     }
-
 })

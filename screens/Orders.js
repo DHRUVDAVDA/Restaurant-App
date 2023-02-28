@@ -6,8 +6,6 @@ import { decrementQty, deleteMyFood, incrementQty } from '../newredux/myFoodSlic
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-
-
 const Orders = ({ navigation }) => {
 
     // const [data, setData] = useState('');
@@ -28,8 +26,7 @@ const Orders = ({ navigation }) => {
         if (cartData.length === 0) {
             setEmpty(true)
         }
-    },[])
-
+    }, [])
 
     const onRefresh = () => {
         setRefreshing(true);
@@ -57,18 +54,17 @@ const Orders = ({ navigation }) => {
                             refreshing={refreshing}
                             keyExtractor={(item) => item.id}
                             renderItem={({ item, index }) => {
+                                setTotal(cartData.reduce((accum, item) => accum + item.price * item.quantity, 0));
                                 return (
                                     <Pressable>
                                         <View style={Styles.card}>
-                                            <View style={Styles.imgview}>
-                                                <Image style={Styles.img} source={{ uri: item.url }} />
-                                            </View>
+
                                             <View style={Styles.txtview}>
+
                                                 <Text style={Styles.txt}>{item.name}</Text>
 
                                                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
-                                                    <Text style={Styles.txt}>quantity - </Text>
 
                                                     <TouchableOpacity
                                                         onPress={() => {
@@ -82,8 +78,9 @@ const Orders = ({ navigation }) => {
 
                                                         <Text style={Styles.quantitytxt}>-</Text>
                                                     </TouchableOpacity>
+
                                                     <View style={Styles.counterview}>
-                                                        <Text style={Styles.txt}>{item.quantity}</Text>
+                                                        <Text style={{ fontSize: 20, color: 'white' }}>{item.quantity}</Text>
                                                     </View>
 
                                                     <TouchableOpacity
@@ -93,7 +90,8 @@ const Orders = ({ navigation }) => {
 
                                                 </View>
 
-                                                <Text style={Styles.txt}>total - ${item.price * item.quantity}</Text>
+                                                <Text style={Styles.txt}>${item.price * item.quantity}</Text>
+
                                                 <TouchableOpacity onPress={() => { dispatch(deleteMyFood(index)) }}>
                                                     <View style={Styles.deletepng}>
                                                         <Image style={Styles.deletepng} source={require('../Images/bin.png')} />
@@ -106,8 +104,35 @@ const Orders = ({ navigation }) => {
                             }
                             } />
 
+                        <View style={Styles.receiptview}>
+                            <Text style={{ marginLeft: 10, fontSize: 20, fontWeight: 'bold', color: 'white' }}>Bill Receipt</Text>
+                            <View style={Styles.fieldview}>
+                                <Text style={Styles.amount}>Items total</Text>
+                                <Text style={Styles.amount}>{cartData.reduce((accum, item) => accum + item.price * item.quantity, 0)} $</Text>
+                            </View>
+
+                            <View style={Styles.fieldview}>
+                                <Text style={Styles.amount}>Offer discount</Text>
+                                <Text style={Styles.amount}>- 25 $</Text>
+                            </View>
+
+                            <View style={Styles.fieldview}>
+                                <Text style={Styles.amount}>Taxes</Text>
+                                <Text style={Styles.amount}>{cartData.reduce((accum, item) => accum + item.price * item.quantity, 0) * 6 / 100} $</Text>
+                            </View>
+
+                            <View style={Styles.fieldview}>
+                                <View style={Styles.line}></View>
+                            </View>
+
+                            <View style={Styles.fieldview}>
+                                <Text style={Styles.amount}>Total amount</Text>
+                                <Text style={Styles.amount}>{cartData.reduce((accum, item) => accum + item.price * item.quantity, 0) + cartData.reduce((accum, item) => accum + item.price * item.quantity, 0) * 6 / 100 - 25} $</Text>
+                            </View>
+                        </View>
+
                         <View style={Styles.bottomtab}>
-                            <Text style={Styles.bottomtxt}>Amount - $ {cartData.reduce((accum, item) => accum + item.price * item.quantity, 0)}</Text>
+                            <Text style={Styles.bottomtxt}>Amount - $ {cartData.reduce((accum, item) => accum + item.price * item.quantity, 0) + cartData.reduce((accum, item) => accum + item.price * item.quantity, 0) * 6 / 100 - 25}</Text>
                             <TouchableOpacity style={Styles.bottombtn}>
                                 <Text style={Styles.bottomtxt}>Pay</Text>
                             </TouchableOpacity>
@@ -137,40 +162,50 @@ const Styles = StyleSheet.create({
     },
     card: {
         width: windowWidth,
+        height:windowHeight/10,
         backgroundColor: 'grey',
-        borderRadius: 30,
-        flexDirection: 'row',
-        marginTop: 10,
-        height: windowHeight / 6
-    },
-    imgview: {
-        width: windowWidth / 3,
         justifyContent: 'center'
     },
-    img: {
-        height: windowHeight / 7,
-        marginLeft: 15,
-        width: windowHeight / 7,
-        borderRadius: 20
-    },
     txtview: {
-        marginLeft: 10,
-        marginTop: 5
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
     },
     counterview: {
         width: 40,
-        alignItems: 'center'
+        alignItems: 'center',
     },
     txt: {
         fontSize: 20,
+        width:80,
         color: 'white',
-        marginTop: 5,
-        marginHorizontal: 10,
     },
     deletepng: {
         height: 30,
         width: 30,
         alignSelf: 'center',
+    },
+    receiptview: {
+        bottom: 0,
+        backgroundColor: 'grey',
+        height: windowHeight / 5,
+        width: windowWidth
+    },
+    fieldview: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 5,
+        marginLeft: 10,
+        marginRight: 10
+    },
+    amount: {
+        fontSize: 17,
+        color: 'white'
+    },
+    line: {
+        flex: 1,
+        height: 1,
+        backgroundColor: 'white'
     },
     bottomtab: {
         backgroundColor: '#fd9827',
@@ -178,7 +213,6 @@ const Styles = StyleSheet.create({
         height: windowHeight / 11,
         alignItems: 'center',
         width: windowWidth,
-        borderRadius: 30,
         justifyContent: 'space-around'
     },
     bottomtxt: {

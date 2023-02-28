@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TextInput, View, StyleSheet, Dimensions, Text, TouchableOpacity, Alert, PermissionsAndroid } from "react-native";
+import { TextInput, View, StyleSheet, Dimensions, Text, TouchableOpacity, Alert, PermissionsAndroid, BackHandler } from "react-native";
 import { getFooddata, getImg, storeData } from "../http/storedata";
 
 import { storage, storageRef } from "../firebase/Firebaseconfig";
@@ -26,6 +26,12 @@ function Upload() {
 
     function Submit() {
 
+        BackHandler.addEventListener('hardwareBackPress',handlebutton)
+        function handlebutton(){
+            BackHandler.goBack();
+            return true
+        }
+
         if (image === '') {
             Alert.alert("select image")
         }
@@ -44,7 +50,7 @@ function Upload() {
           setTimeout(()=>{
             storeData(foodData);
           },5000)
-           handleUpload();
+        handleUpload();
         }
     }
     

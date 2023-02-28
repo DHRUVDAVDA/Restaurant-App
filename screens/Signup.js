@@ -15,7 +15,7 @@ function Signup({navigation}) {
     const [password , setPassword] = useState('');
    
 
-     function storeinStorage(){
+     function storeinStorage(){                               //OBJECT WILL BE STORED IN ASYNC STORAGE
       const localUserdata = {
         name: name,
         no:+no,
@@ -23,7 +23,7 @@ function Signup({navigation}) {
         password:password,
         issignup:'true'
       }
-      AsyncStorage.setItem('user',JSON.stringify(localUserdata));
+      AsyncStorage.setItem('user',JSON.stringify(localUserdata));     //SETTING DATA IN ASYNC STORAGE
       console.log('locallllll',localUserdata);
      
     }

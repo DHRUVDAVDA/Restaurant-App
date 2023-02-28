@@ -14,11 +14,7 @@ const Bottomtab = () => {
                 options={{
                     tabBarIcon: () => (<Image source={require("../Images/hamburger.png")}
                         style={{ width: 20, height: 20 }} />),
-                        headerStyle: { backgroundColor: '#100f1f' },
-                        headerTitleStyle: { color: 'white' },
-                        headerTintColor: 'white',
-                        headerTitleAlign: 'center',
-                        title:'Foodie',
+                       headerShown:false
                 }}
             />
 
