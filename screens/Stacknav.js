@@ -31,7 +31,7 @@ const Stacknav = () => {
 
       <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
 
-      <Stack.Screen name="Signup" component={Signup} />
+      <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }}/>
 
       <Stack.Screen name="Toptab" component={Bottomtab} 
       options={{headerShown:false}}

@@ -26,16 +26,18 @@ function Upload() {
 
     function Submit() {
 
-        BackHandler.addEventListener('hardwareBackPress',handlebutton)
-        function handlebutton(){
-            BackHandler.goBack();
-            return true
-        }
+        BackHandler.addEventListener('hardwareBackPress', handlebutton)
 
+        function handlebutton() {
+            navigation.navigate('Toptab');
+            return true;
+        }
         if (image === '') {
             Alert.alert("select image")
         }
         else {
+            handleUpload();
+            
             const foodData = {
                 foodname,
                 foodprice,
@@ -50,7 +52,7 @@ function Upload() {
           setTimeout(()=>{
             storeData(foodData);
           },5000)
-        handleUpload();
+       
         }
     }
     

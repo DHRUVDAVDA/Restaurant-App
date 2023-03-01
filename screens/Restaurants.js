@@ -26,8 +26,10 @@ const Restaurants = ({ navigation }) => {
   const mapRef = useRef(null);
   const [mapRegion, setMapRegion] = useState({latitude:0 , longitude:0 ,latitudeDelta: 0.0922, longitudeDelta: 0.0421});
 
-  useEffect(() => {                                      //FETCH CURRENTLOCATION
-    Geolocation.getCurrentPosition(
+  useEffect(()=>{
+    fetchLocation();
+
+    if(fetchLocation){ Geolocation.getCurrentPosition(
       position => {
         setMapRegion({ latitude: position.coords.latitude, longitude: position.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 });
       },
@@ -35,8 +37,34 @@ const Restaurants = ({ navigation }) => {
         console.log(error);
       },
       { enableHighAccuracy: false, timeout: 15000, maximumAge: 1000 },
-    );
-  }, []);
+    );}     
+  },[])
+
+  const fetchLocation = async () => {
+    try {
+        const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+            {
+                title: 'Permission',
+                message: 'Can we access your location?',
+                buttonNeutral: 'Ask Me Later',
+                buttonNegative: 'Cancel',
+                buttonPositive: 'OK',
+            },
+        );
+        console.log('granted', granted);
+        if (granted === 'granted') {
+            console.log('You can use Geolocation');
+            return true;
+        } else {
+            console.log('You cannot use Geolocation');
+            return false;
+        }
+    } catch (err) {
+        return false;
+    }
+
+};
 
   console.log('map region', mapRegion);
 

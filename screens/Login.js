@@ -43,9 +43,9 @@ function Login({ navigation }) {
       const usersdata = await getdata();
       console.log('userdataaaa', usersdata);
       const Email = usersdata.some(x => x.email === email);
-      console.log("resssssss", result);
+      console.log("resssssss", Email);
       const Password = usersdata.some(x => x.password === password);
-      console.log('passsss', resul);
+      console.log('passsss', Password);
 
       if (Email === true && Password === true) {
          navigation.navigate('Toptab');
