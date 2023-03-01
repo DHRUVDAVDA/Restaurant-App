@@ -22,10 +22,10 @@ function Homescreen({ navigation, id }) {
         fetchData();
     }, []);
 
-    const items = useSelector(state => state.food);   //USED TO SHOW NO. OF AVAILABLE FOOD IN CART
+    const items = useSelector(state => state.food);   //USE TO SHOW NO. OF AVAILABLE FOOD IN CART
     console.log(items);
 
-    BackHandler.addEventListener('hardwareBackPress', handlebackbutton) //HANDLES HARDWARE BACKHANDLER
+    BackHandler.addEventListener('hardwareBackPress', handlebackbutton)  //HANDLES HARDWARE BACKHANDLER
     function handlebackbutton() {
         BackHandler.exitApp();
         return true;
@@ -116,8 +116,7 @@ function Homescreen({ navigation, id }) {
                         <ScrollView refreshControl={
                             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
 
-
-                            <SliderBox images={images} autoplay={true} circleLoop={true} autoplayInterval={4000} />
+                            <SliderBox images={images} autoplay={true} circleLoop={true} autoplayInterval={4000}/>
 
                             <View>
 
@@ -277,18 +276,18 @@ const Style = StyleSheet.create({
     cattag: {
         color: 'white',
         fontWeight: 'bold',
-        fontSize: 18,
+        fontSize: 16,
         alignSelf: 'center'
     },
     foodprice: {
-        color: 'white',
+        color: '#fd9827',
         alignSelf: 'center',
         fontSize: 15
     },
     buybtn: {
         backgroundColor: '#fd9827',
         height: 25,
-        width: 80,
+        width: windowWidth/6,
         marginTop: 5,
         borderRadius: 10,
         alignItems: 'center',
@@ -297,6 +296,7 @@ const Style = StyleSheet.create({
         alignSelf: 'center'
     },
     buytxt: {
-        color: 'white'
+        color: 'white',
+        fontSize:12
     }
 })

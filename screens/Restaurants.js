@@ -24,17 +24,12 @@ const Restaurants = ({ navigation }) => {
 
   const flatListRef = useRef(null);
   const mapRef = useRef(null);
-  const [mapRegion, setMapRegion] = useState({
-    latitude: 23.0356435,
-    longitude: 72.504261,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  });
+  const [mapRegion, setMapRegion] = useState({latitude:0 , longitude:0 ,latitudeDelta: 0.0922, longitudeDelta: 0.0421});
 
   useEffect(() => {                                      //FETCH CURRENTLOCATION
     Geolocation.getCurrentPosition(
       position => {
-        setMapRegion({ latitude: position.coords.latitude, longitude: position.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421, });
+        setMapRegion({ latitude: position.coords.latitude, longitude: position.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 });
       },
       error => {
         console.log(error);

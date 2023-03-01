@@ -33,8 +33,6 @@ const Restaurantdetail = ({ navigation, route }) => {
         setData(item);
         setFetching(false);
     }
-    console.log('latttt', lat);
-
     return (
         <View style={Style.container}>
 

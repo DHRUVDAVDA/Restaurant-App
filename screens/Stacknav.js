@@ -80,6 +80,7 @@ const Stacknav = () => {
       <Stack.Screen name="Restaurantdetail" component={Restaurantdetail} options={{headerShown:false}}/>
 
       <Stack.Screen name="Restlocation" component={Restloc} options={{headerShown:false}}/>
+
     </Stack.Navigator>
 
   )

@@ -8,8 +8,6 @@ const windowHeight = Dimensions.get('window').height;
 
 const Orders = ({ navigation }) => {
 
-    // const [data, setData] = useState('');
-    const [total, setTotal] = useState(0);
     const [refreshing, setRefreshing] = useState(false);
     const [empty, setEmpty] = useState(false)
 
@@ -34,12 +32,11 @@ const Orders = ({ navigation }) => {
             setRefreshing(false);
         }, 2000);
     };
-    // async function getOrder() {
-    //     const orderdata = await getOrderdata();
-    //     setData(orderdata);
-    //     setDatafetch(false);
-    // }
-    // console.log(amount);
+
+    function Total(){
+       const total = cartData.reduce((accum, item) => accum + item.price * item.quantity, 0);
+       return total;
+    }
 
 
     return (
@@ -54,7 +51,6 @@ const Orders = ({ navigation }) => {
                             refreshing={refreshing}
                             keyExtractor={(item) => item.id}
                             renderItem={({ item, index }) => {
-                                setTotal(cartData.reduce((accum, item) => accum + item.price * item.quantity, 0));
                                 return (
                                     <Pressable>
                                         <View style={Styles.card}>
@@ -108,7 +104,7 @@ const Orders = ({ navigation }) => {
                             <Text style={{ marginLeft: 10, fontSize: 20, fontWeight: 'bold', color: 'white' }}>Bill Receipt</Text>
                             <View style={Styles.fieldview}>
                                 <Text style={Styles.amount}>Items total</Text>
-                                <Text style={Styles.amount}>{cartData.reduce((accum, item) => accum + item.price * item.quantity, 0)} $</Text>
+                                <Text style={Styles.amount}>{Total()} $</Text>
                             </View>
 
                             <View style={Styles.fieldview}>
@@ -117,8 +113,8 @@ const Orders = ({ navigation }) => {
                             </View>
 
                             <View style={Styles.fieldview}>
-                                <Text style={Styles.amount}>Taxes</Text>
-                                <Text style={Styles.amount}>{cartData.reduce((accum, item) => accum + item.price * item.quantity, 0) * 6 / 100} $</Text>
+                                <Text style={Styles.amount}>Taxes (6%)</Text>
+                                <Text style={Styles.amount}>{Total() * 6 / 100} $</Text>
                             </View>
 
                             <View style={Styles.fieldview}>
@@ -127,12 +123,12 @@ const Orders = ({ navigation }) => {
 
                             <View style={Styles.fieldview}>
                                 <Text style={Styles.amount}>Total amount</Text>
-                                <Text style={Styles.amount}>{cartData.reduce((accum, item) => accum + item.price * item.quantity, 0) + cartData.reduce((accum, item) => accum + item.price * item.quantity, 0) * 6 / 100 - 25} $</Text>
+                                <Text style={Styles.amount}>{Total()+Total() * 6 / 100 - 25} $</Text>
                             </View>
                         </View>
 
                         <View style={Styles.bottomtab}>
-                            <Text style={Styles.bottomtxt}>Amount - $ {cartData.reduce((accum, item) => accum + item.price * item.quantity, 0) + cartData.reduce((accum, item) => accum + item.price * item.quantity, 0) * 6 / 100 - 25}</Text>
+                            <Text style={Styles.bottomtxt}>Amount - $ {Total()+Total() * 6 / 100 - 25}</Text>
                             <TouchableOpacity style={Styles.bottombtn}>
                                 <Text style={Styles.bottomtxt}>Pay</Text>
                             </TouchableOpacity>
