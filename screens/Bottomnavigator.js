@@ -10,7 +10,7 @@ const Bottomtab = () => {
         <Tab.Navigator screenOptions={({ }) => ({
             tabBarStyle: { height: 55, backgroundColor: '#100f1f' }, tabBarActiveTintColor: '#fd9827', tabBarInactiveTintColor: 'white'
         })}>
-            <Tab.Screen name="FOOD" component={Homescreen}
+            <Tab.Screen name="Food" component={Homescreen}
                 options={{
                     tabBarIcon: () => (<Image source={require("../Images/hamburger.png")}
                         style={{ width: 20, height: 20 }} />),

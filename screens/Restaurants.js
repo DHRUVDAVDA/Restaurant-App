@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
   Text, View, StyleSheet, Image, TouchableOpacity, TextInput,
-  Dimensions, FlatList, Pressable, BackHandler, ActivityIndicator
+  Dimensions, FlatList, Pressable, BackHandler, ActivityIndicator, PermissionsAndroid, Alert
 } from 'react-native';
 import MapView, { Marker } from "react-native-maps";
 import Geolocation from "@react-native-community/geolocation";
+
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -17,6 +18,9 @@ const Restaurants = ({ navigation }) => {
     return true;
   }
 
+  const [location, setLocation] = useState(null);
+
+
   const [click, setClick] = useState(false);
   const [searchText, setSearchText] = useState();
   const [restaurantData, setRestaurantData] = useState([]);
@@ -24,66 +28,60 @@ const Restaurants = ({ navigation }) => {
 
   const flatListRef = useRef(null);
   const mapRef = useRef(null);
-  const [mapRegion, setMapRegion] = useState({latitude:0 , longitude:0 ,latitudeDelta: 0.0922, longitudeDelta: 0.0421});
-
-  useEffect(()=>{
-    fetchLocation();
-
-    if(fetchLocation){ Geolocation.getCurrentPosition(
-      position => {
-        setMapRegion({ latitude: position.coords.latitude, longitude: position.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 });
-      },
-      error => {
-        console.log(error);
-      },
-      { enableHighAccuracy: false, timeout: 15000, maximumAge: 1000 },
-    );}     
-  },[])
 
   const fetchLocation = async () => {
     try {
-        const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-            {
-                title: 'Permission',
-                message: 'Can we access your location?',
-                buttonNeutral: 'Ask Me Later',
-                buttonNegative: 'Cancel',
-                buttonPositive: 'OK',
-            },
-        );
-        console.log('granted', granted);
-        if (granted === 'granted') {
-            console.log('You can use Geolocation');
-            return true;
-        } else {
-            console.log('You cannot use Geolocation');
-            return false;
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Location Permission',
+          message: 'This app needs access to your location.',
+          buttonPositive: 'OK',
+          buttonNegative: 'Cancel',
         }
-    } catch (err) {
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('Location permission granted');
+        return true;
+      } else {
+        console.log('Location permission denied');
         return false;
+      }
+    } catch (err) {
+      console.warn(err)
     }
 
 };
 
-  console.log('map region', mapRegion);
+  useEffect(()=>{
+   fetchLocation();
+  },[])
 
-  useEffect(() => {          //FETCH NEAREST RESTAURANT DATA
-    if (mapRegion) {
-      const apiUrl = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${mapRegion.latitude},${mapRegion.longitude}&radius=500&type=restaurant&key=AIzaSyBYo5s0uQPFgc8qafyO0Rzejpe78bi4ezw`;
+  useEffect(() => {
+    if(fetchLocation){
+    Geolocation.getCurrentPosition(
+      position => setLocation(position.coords),
+      error => console.error(error),
+      { enableHighAccuracy: false, timeout: 15000, maximumAge: 1000 },
+    );
+  }
+  }, []);
+
+  useEffect(() => {
+    if (location) {
+      const apiUrl = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${location.latitude},${location.longitude}&radius=500&type=restaurant&key=AIzaSyBYo5s0uQPFgc8qafyO0Rzejpe78bi4ezw`;
 
       fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
           setRestaurantData(data.results);
-          console.log(data.results.menu);
           setFetched(false);
         })
         .catch(error => {
           console.log(error);
         });
     }
-  }, [mapRegion]);
+  }, [location]);
 
   const searchFilteredData = searchText                     //FILTER RESTAURANT
     ? restaurantData.filter((x) =>
@@ -114,7 +112,12 @@ const Restaurants = ({ navigation }) => {
         <View style={{ flex: 2 }}>
           <MapView
             style={Style.map}
-            region={mapRegion}
+            initialRegion={{
+              latitude: location.latitude,
+              longitude: location.longitude,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }}
             ref={mapRef}
           >
 
@@ -131,7 +134,7 @@ const Restaurants = ({ navigation }) => {
               />
             ))}
             <Marker
-              coordinate={{ latitude: mapRegion.latitude, longitude: mapRegion.longitude }}
+              coordinate={{ latitude: location.latitude, longitude: location.longitude }}
               title="your are here"
             >
               <View>
