@@ -1,16 +1,9 @@
 import React, { useState } from "react";
 import { TextInput, View, StyleSheet, Dimensions, Text, TouchableOpacity, Alert, PermissionsAndroid, BackHandler } from "react-native";
 import { getFooddata, getImg, storeData } from "../http/storedata";
-
 import { storage, storageRef } from "../firebase/Firebaseconfig";
 import { uploadBytes , getDownloadURL } from 'firebase/storage'
 import { launchImageLibrary } from "react-native-image-picker";
-
-
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-
-
 
 function Upload() {
 
@@ -36,8 +29,6 @@ function Upload() {
             Alert.alert("select image")
         }
         else {
-            handleUpload();
-            
             const foodData = {
                 foodname,
                 foodprice,
@@ -48,11 +39,12 @@ function Upload() {
                 quantity:1
 
             }
-            console.log('fooddddddd', foodData);
-          setTimeout(()=>{
-            storeData(foodData);
-          },5000)
-       
+            handleUpload()
+            .then(()=>{
+                if(url){
+                   storeData(foodData);
+                }
+            });
         }
     }
     
@@ -113,7 +105,8 @@ function Upload() {
 
         uploadBytes(reference , blob).then((snapshot)=>{
             console.log('uploaded');
-            getDownloadURL(snapshot.ref).then((downloadUrl)=>{
+            getDownloadURL(snapshot.ref)
+            .then((downloadUrl)=>{
              console.log('download url',downloadUrl);
              setUrl(downloadUrl);
             })
@@ -186,6 +179,7 @@ function Upload() {
     return (
         <View style={Styles.container}>
             <Text style={Styles.head}>ADD DATA</Text>
+            
             <TextInput
                 value={foodname}
                 onChangeText={(text) => setFoodname(text)}

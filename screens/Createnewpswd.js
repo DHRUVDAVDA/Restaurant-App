@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Text, View, StyleSheet, Dimensions, TouchableOpacity, Alert, StatusBar } from "react-native";
+import { Text, View, StyleSheet, Dimensions, TouchableOpacity, Alert, StatusBar,ToastAndroid } from "react-native";
 import Inputfield from "../components/Input";
 import { getdata, updatePassword } from "../http/storedata";
 import { useRoute } from "@react-navigation/native";
+import auth from '@react-native-firebase/auth'
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -12,35 +13,36 @@ function Login({ navigation }) {
     const route = useRoute();
 
     const [email, seEmail] = useState('');
-    const [pswd, setPswd] = useState('');
+
+    
 
     async function Updatepswd(userData) {
 
-        const usersdata = await getdata();
-        console.log(usersdata);
+    //     const usersdata = await getdata();
+    //     console.log(usersdata);
 
-        const result = usersdata.filter(x => x.email === email);
-        const resulttruefalse = usersdata.some(x => x.email === email);
-        console.log("resssssss", result);
+    //     const result = usersdata.filter(x => x.email === email);
+    //     const resulttruefalse = usersdata.some(x => x.email === email);
+    //     console.log("resssssss", result);
 
-        const item = usersdata.find(x => x.email === email);
-        console.log('itemmmm',item);
-       if(item){
-        item.password = pswd;
-        const id= item.id;
-        updatePassword(id,item);   
-    }
+    //     const item = usersdata.find(x => x.email === email);
+    //     console.log('itemmmm',item);
+    //    if(item){
+    //     item.password = pswd;
+    //     const id= item.id;
+    //     updatePassword(id,item);   
+    // }
        
 
-        if (resulttruefalse === true) {
-            console.log(result);
-            navigation.navigate('Toptab');
-        } else {
-            Alert.alert("enter valid email")
-        }
-
-
-
+    //     if (resulttruefalse === true) {
+    //         console.log(result);
+    //         navigation.navigate('Toptab');
+    //     } else {
+    //         Alert.alert("enter valid email")
+    //     }
+    
+        auth().sendPasswordResetEmail(email)
+        .then(()=>ToastAndroid.showWithGravity('email has been sent',ToastAndroid.LONG,ToastAndroid.CENTER))
     }
     return (
         <View style={Styles.container}>
@@ -51,11 +53,6 @@ function Login({ navigation }) {
                 value={email}
                 onChangeText={(text) => seEmail(text)}
                 placeholder={"enter your email"} />
-
-            <Inputfield
-                value={pswd}
-                onChangeText={(text) => setPswd(text)}
-                placeholder={"enter new password"} />
 
             <TouchableOpacity onPress={Updatepswd} style={Styles.btn}>
                 <Text style={Styles.btntext}>Submit</Text>

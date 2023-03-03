@@ -72,8 +72,12 @@ return(
         <Text style={Styles.fields}>email = {email}</Text>
         <Text style={Styles.fields}>password = {password}</Text>
 
-        <TouchableOpacity onPress={updateinStorage} style={Styles.btn}>
+<TouchableOpacity onPress={updateinStorage} style={Styles.btn}>
          <Text style={Styles.btntext}>Log out</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={()=>{navigation.navigate('Resetpswd',{name:name , no:no , password:password})}} style={Styles.btn}>
+         <Text style={Styles.btntext}>Reset Password</Text>
         </TouchableOpacity></View>):(<View style={{alignSelf:'center'}}><Text style={{marginTop:100,fontSize:20 , color:'white' , fontWeight:'bold'}}>
           you must have log in or create an account</Text>
 

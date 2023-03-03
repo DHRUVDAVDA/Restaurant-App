@@ -62,7 +62,7 @@ const Restaurants = ({ navigation }) => {
     Geolocation.getCurrentPosition(
       position => setLocation(position.coords),
       error => console.error(error),
-      { enableHighAccuracy: false, timeout: 15000, maximumAge: 1000 },
+      { enableHighAccuracy: false , timeout: 20000, maximumAge: 36000 },
     );
   }
   }, []);

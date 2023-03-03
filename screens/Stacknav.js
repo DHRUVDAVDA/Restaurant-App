@@ -15,6 +15,8 @@ import Bottomtab from "./Bottomnavigator";
 import Restaurants from "./Restaurants";
 import Restaurantdetail from "./Restaurantdetail";
 import Restloc from "./restaurantLocation";
+import resetPswd from "./resetPswd";
+import Resetpswd from "./resetPswd";
 
 const Stacknav = () => {
 
@@ -40,7 +42,7 @@ const Stacknav = () => {
       <Stack.Screen name="Homescreen" component={Homescreen} options={{headerShown:false}}
         />
 
-      <Stack.Screen name="Createnewpswd" component={Createnewpswd} />
+      <Stack.Screen name="Createnewpswd" component={Createnewpswd} options={{headerShown:false}}/>
 
       <Stack.Screen name="Upload" component={Upload} options={{
         title: 'Upload data',
@@ -80,6 +82,8 @@ const Stacknav = () => {
       <Stack.Screen name="Restaurantdetail" component={Restaurantdetail} options={{headerShown:false}}/>
 
       <Stack.Screen name="Restlocation" component={Restloc} options={{headerShown:false}}/>
+
+      <Stack.Screen name="Resetpswd" component={Resetpswd} options={{headerShown:false}}/>
 
     </Stack.Navigator>
 

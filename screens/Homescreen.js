@@ -113,7 +113,7 @@ function Homescreen({ navigation, id }) {
                             </View>
                         </View>
 
-                        <ScrollView refreshControl={
+                        <ScrollView showsVerticalScrollIndicator={false} refreshControl={
                             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
 
                             <SliderBox images={images} autoplay={true} circleLoop={true} autoplayInterval={4000}/>
@@ -127,6 +127,7 @@ function Homescreen({ navigation, id }) {
                                 <FlatList
                                     horizontal={true}
                                     data={catdata}
+                                    showsHorizontalScrollIndicator={false}
                                     keyExtractor={(item) => item.category}
                                     renderItem={({ item }) => {
                                         const category = item.category;
