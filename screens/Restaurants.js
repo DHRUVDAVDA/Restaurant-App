@@ -162,7 +162,9 @@ const Restaurants = ({ navigation }) => {
                       <View style={Style.Flattxtimgcontainer}>
                         <Text style={Style.Flattxt}>{item.name} ⭐{item.rating}</Text>
                       </View>
-                      <Image style={Style.Flatimg} source={{ uri: photoUrl }} />
+                      {photoUrl ?  <Image style={Style.Flatimg} source={{ uri: photoUrl }} /> :
+                      <Text>No Image Found</Text>}
+                     
                     </View>
                   </TouchableOpacity>
                 )

@@ -7,6 +7,7 @@ import { getFooddata } from "../http/storedata";
 import { useSelector } from "react-redux";
 import { SliderBox } from 'react-native-image-slider-box';
 import { LogBox } from "react-native";
+import NetInfo from "@react-native-community/netinfo";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -19,8 +20,16 @@ function Homescreen({ navigation, id }) {
     ])
 
     useEffect(() => {                  //FETCH DATA FROM FIREBASE WHILE LOADING
-        fetchData();
+       fetchData();
+       network();
     }, []);
+
+    const network = async () => {
+        NetInfo.addEventListener((state) => {
+          const net = state.isConnected;
+          setIsConnected(net);
+        });
+      };
 
     const items = useSelector(state => state.food);   //USE TO SHOW NO. OF AVAILABLE FOOD IN CART
     console.log(items);
@@ -36,7 +45,7 @@ function Homescreen({ navigation, id }) {
     const [cartItem, setCartitem] = useState(false)
     const [refreshing, setRefreshing] = useState(false);
     const [catdata, setCatdata] = useState('');
-
+    const [isConnected, setIsConnected] = useState(false);
 
     async function fetchData() {
         const fooddata = await getFooddata();        //FETCH UPLOADED FOOD DATA
@@ -82,7 +91,7 @@ function Homescreen({ navigation, id }) {
                 (
                     <View>
                         <StatusBar backgroundColor="#100f1f" />
-
+       {isConnected ? <></> : <Text style={{alignSelf:'center'}}>Network Error</Text>}
                         <View style={Style.headerview}>
 
                             <View style={{ position: 'absolute', left: 10, alignSelf: 'center' }}>

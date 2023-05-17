@@ -132,9 +132,9 @@ const Fooddetail = ({ navigation, route }) => {
                     <Text style={Style.buytxt}>Add to cart</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={Style.buybtn}>
+                {/* <TouchableOpacity style={Style.buybtn}>
                     <Text style={Style.buytxt}>Pay</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
           </View>
         )

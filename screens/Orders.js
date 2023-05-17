@@ -24,7 +24,7 @@ const Orders = ({ navigation }) => {
         if (cartData.length === 0) {
             setEmpty(true)
         }
-    }, [])
+    }, [cartData])
 
     const onRefresh = () => {
         setRefreshing(true);
@@ -99,8 +99,7 @@ const Orders = ({ navigation }) => {
                                 )
                             }
                             } />
-
-                        <View style={Styles.receiptview}>
+{cartData.length > 0 &&  <><View style={Styles.receiptview}>
                             <Text style={{ marginLeft: 10, fontSize: 20, fontWeight: 'bold', color: 'white' }}>Bill Receipt</Text>
                             <View style={Styles.fieldview}>
                                 <Text style={Styles.amount}>Items total</Text>
@@ -126,14 +125,14 @@ const Orders = ({ navigation }) => {
                                 <Text style={Styles.amount}>{Total()+Total() * 6 / 100 - 25} $</Text>
                             </View>
                         </View>
-
                         <View style={Styles.bottomtab}>
-                            <Text style={Styles.bottomtxt}>Amount - $ {Total()+Total() * 6 / 100 - 25}</Text>
-                            <TouchableOpacity style={Styles.bottombtn}>
+                        <Text style={Styles.bottomtxt}>Amount - $ {(Total()+Total() * 6 / 100 - 25)>0 ? Total()+Total() * 6 / 100 - 25 : 0}</Text>
+                            {/* <TouchableOpacity style={Styles.bottombtn}>
                                 <Text style={Styles.bottomtxt}>Pay</Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
                         </View>
-
+                        </>
+}
                     </View>
 
                 )}
